@@ -280,6 +280,8 @@ void WebMaps::positionUpdateTimeout()
 void WebMaps::positionUpdatedHandler(const QGeoPositionInfo& update)
 {
 	cout << "SUCCESS " << update.coordinate().latitude() << "," << update.coordinate().longitude() << endl;
+	myLocation = update.coordinate();
+
 	if (!initialized) {
 		m_ProgressDialog->setBody("initialization complete");
 		m_ProgressDialog->setProgress(100);
@@ -292,7 +294,6 @@ void WebMaps::positionUpdatedHandler(const QGeoPositionInfo& update)
 
 		initialized = true;
 	} else {
-		myLocation = update.coordinate();
 		emit myLocationChanged(myLocation);
 	}
 }

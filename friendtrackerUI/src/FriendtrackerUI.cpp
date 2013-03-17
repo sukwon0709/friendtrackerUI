@@ -58,9 +58,7 @@ FriendtrackerUI::FriendtrackerUI(bb::cascades::Application *app, const QString& 
 			this,
 			SLOT(setSessionKey(const QString &)));
 	Q_ASSERT(connected);
-
-	//connected = QObject::connect(&ServerInterface::getInstance(), SIGNAL(loginSuccess()), this, SLOT(initWebMaps()));
-	//Q_ASSERT(connected);
+	Q_UNUSED(connected);
 }
 
 void FriendtrackerUI::login(const QGeoCoordinate& coord)
