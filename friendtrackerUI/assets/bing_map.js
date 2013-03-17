@@ -19,6 +19,10 @@ var googleMap;
 var bingMap;
 var markersArray = [];
 
+// pushpin for the user
+var mypin;
+var friendsPins = {};
+
 function initMaps(lat, lng) {
     console.log("init BingMaps");
     var myLat = lat;
@@ -41,7 +45,26 @@ function initMaps(lat, lng) {
 
     Microsoft.Maps.Events.addHandler(bingMap, 'viewchange', centerChanged);
     Microsoft.Maps.Events.addHandler(bingMap, 'click', clicked);
+    
+    // put pushpin for the user
+    var iconpath = "local:///assets/images/pin.png";
+    mypin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(myLat, myLong),{
+    	icon:iconpath, height:60, width:60, anchor:new Microsoft.Maps.Point(20,58), draggable: false});
+    bingMap.entities.push(mypin);
+    Microsoft.Maps.Events.addHandler(mypin, 'click', markerClicked);
+    
+    var friends = ["testusr1", "testusr2", "testusr3", "testusr4", "testusr5", "testusr6"];
+    startSubscription(friends, this);
+    
     console.log("Done init BingMaps");
+}
+
+function plot(data) {
+	if (data.user in friendsPins) {
+		updatePushPin(data.location.x, data.location.y, data.user, "local:///assets/images/pin.png");
+	} else {
+		createPushPin(data.location.x, data.location.y, data.user, "local:///assets/images/pin.png");	
+	}
 }
 
 function clicked(e) {
@@ -89,6 +112,12 @@ function createPushPin(lat, lon, title, iconpath) {
     bingMap.entities.push(pin);
     Microsoft.Maps.Events.addHandler(pin, 'click', markerClicked);
     markersArray.push(pin);
+    friendsPins[title] = pin;
+}
+
+function updatePushPin(lat, lon, title) {
+	var pin = friendsPins[title];
+	pin.setLocation(new Microsoft.Maps.Location(lat, lon));
 }
 
 function removeAllPins() {

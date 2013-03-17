@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'RegistrationHandler.hpp'
 **
-** Created: Sun Mar 17 00:55:31 2013
+** Created: Sun Mar 17 00:56:41 2013
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.4)
 **
 ** WARNING! All changes made in this file will be lost!

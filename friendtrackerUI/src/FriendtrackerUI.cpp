@@ -8,6 +8,9 @@
 #include <bb/platform/bbm/Contact>
 #include <bb/platform/bbm/UserProfile>
 #include <bb/platform/bbm/MessageService>
+#include <bb/pim/contacts/ContactService>
+#include <bb/pim/contacts/Contact>
+#include <bb/pim/contacts/ContactListFilters>
 
 #include "LoginMessage.h"
 #include "UpdateLocationMessage.h"
@@ -118,6 +121,20 @@ void FriendtrackerUI::initUserProfile()
 			 << endl;
 		ppIds.push_back(contacts.at(i).ppId());
 	}
+	/*using namespace bb::pim;
+	bb::pim::contacts::ContactListFilters filter;
+	filter = filter.setLimit(10000);
+	QList<bb::pim::contacts::Contact> contacts = bb::pim::contacts::ContactService().contacts(filter);
+	for (int i = 0; i < contacts.size(); i++) {
+		contacts::Contact detailedContact = contacts::ContactService().contactDetails(contacts.at(i).id());
+		cout << "name: " << contacts.at(i).displayName().toStdString()
+			 << " account id: " << contacts.at(i).accountId() << endl;
+		QList<contacts::ContactAttribute> attributes = detailedContact.attributes();
+		for (int j = 0; j < attributes.size(); j++) {
+			cout << attributes.at(j).label().toStdString() << ": "
+					<< attributes.at(j).value().toStdString() << endl;
+		}
+	}*/
 
 	emit userProfileInitialized();
 }

@@ -93,16 +93,4 @@
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>com.rim.tad.tools.qml.core.qmlNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>assets/images/friends.jpg</name>
-			<type>1</type>
-			<location>C:/Users/s3oh/Downloads/referfreind.jpg</location>
-		</link>
-		<link>
-			<name>assets/images/pin.png</name>
-			<type>1</type>
-			<location>C:/Users/s3oh/Downloads/DrawingPin1_Blue.png</location>
-		</link>
-	</linkedResources>
 </projectDescription>
