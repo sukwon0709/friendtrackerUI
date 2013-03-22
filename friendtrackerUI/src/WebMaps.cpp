@@ -307,3 +307,8 @@ double WebMaps::getMyLongitude() const
 {
 	return myLocation.longitude();
 }
+
+void WebMaps::showFriends()
+{
+	cout << "show friends" << endl;
+}

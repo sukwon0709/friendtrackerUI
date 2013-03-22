@@ -65,6 +65,7 @@ public slots:
     void nextViewMode();
     void positionUpdateTimeout();
     void positionUpdatedHandler(const QGeoPositionInfo& info);
+    void showFriends();
 
 signals:
     // The change notification signals of the properties

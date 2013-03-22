@@ -11,14 +11,17 @@
 #include <bb/pim/contacts/ContactService>
 #include <bb/pim/contacts/Contact>
 #include <bb/pim/contacts/ContactListFilters>
+#include <bb/system/SystemToast>
 
 #include "LoginMessage.h"
 #include "UpdateLocationMessage.h"
 #include "ServerInterface.h"
 
 #include <iostream>
+#include <sstream>
 using namespace std;
 
+using namespace bb::system;
 using namespace bb::cascades;
 using namespace bb::platform::bbm;
 
@@ -116,9 +119,14 @@ void FriendtrackerUI::initUserProfile()
 	vector<QString> ppIds;
 	cout << "getting contacts" << endl;
 	for (int i = 0; i < contacts.size(); i++) {
-		cout << "ppId: " << contacts.at(i).ppId().toStdString()
-			 << " displayName: " << contacts.at(i).displayName().toStdString()
-			 << endl;
+		stringstream ss;
+		ss << "ppId: " << contacts.at(i).ppId().toStdString()
+		   << " displayName: " << contacts.at(i).displayName().toStdString()
+		   << endl;
+		cout << ss.str();
+		SystemToast toast;
+		toast.setBody(QString(ss.str().c_str()));
+		toast.exec();
 		ppIds.push_back(contacts.at(i).ppId());
 	}
 	/*using namespace bb::pim;
