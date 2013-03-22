@@ -319,7 +319,7 @@ void WebMaps::showFriends()
 	InvokeRequest request;
 	request.setTarget("sys.bbm.sharehandler");
 	request.setAction("bb.action.BBMCHAT");
-	request.setUri("pin:2A91A09F");
+	request.setUri("pin:24E481CD");
 	request.setTargetTypes(InvokeTarget::Card);
 	InvokeTargetReply* reply = invokeManager.invoke(request);
 	reply->setParent(this);
