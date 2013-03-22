@@ -25,6 +25,12 @@
 
 using namespace QtMobilitySubset;
 
+namespace bb{
+	namespace system {
+		class InvokeTargetReply;
+	}
+}
+
 //! [0]
 class WebMaps : public QObject
 {
@@ -66,6 +72,7 @@ public slots:
     void positionUpdateTimeout();
     void positionUpdatedHandler(const QGeoPositionInfo& info);
     void showFriends();
+    void onInvokeResult();
 
 signals:
     // The change notification signals of the properties
@@ -92,6 +99,7 @@ private:
     bb::system::SystemProgressDialog* m_ProgressDialog;
     QGeoCoordinate myLocation;
     bool initialized;
+    bb::system::InvokeTargetReply* m_invokeTargetReply;
 };
 //! [0]
 

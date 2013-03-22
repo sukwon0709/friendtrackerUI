@@ -18,6 +18,10 @@
 #include <QFile>
 
 #include <bb/location/PositionErrorCode>
+#include <bb/system/InvokeManager>
+#include <bb/system/InvokeRequest>
+#include <bb/system/InvokeTarget>
+#include <bb/system/InvokeTargetReply>
 
 #include <iostream>
 
@@ -310,5 +314,48 @@ double WebMaps::getMyLongitude() const
 
 void WebMaps::showFriends()
 {
-	cout << "show friends" << endl;
+	// bring up bbm chat (just forn now)
+	InvokeManager invokeManager(this);
+	InvokeRequest request;
+	request.setTarget("sys.bbm.sharehandler");
+	request.setAction("bb.action.BBMCHAT");
+	request.setUri("pin:2A91A09F");
+	request.setTargetTypes(InvokeTarget::Card);
+	InvokeTargetReply* reply = invokeManager.invoke(request);
+	reply->setParent(this);
+	connect(reply, SIGNAL(finished()), this, SLOT(onInvokeResult()));
+	m_invokeTargetReply = reply;
+}
+
+void WebMaps::onInvokeResult()
+{
+	// Check for errors
+	    switch(m_invokeTargetReply->error()) {
+	        // Invocation could not find the target
+	        // did we use the right target ID?
+	    case InvokeReplyError::NoTarget: {
+	            cout << "invokeFinished(): Error: no target" << endl;
+	            break;
+	        }
+	        // There was a problem with the invoke request
+	        // did we set all the values correctly?
+	    case InvokeReplyError::BadRequest: {
+	            cout << "invokeFinished(): Error: bad request" << endl;
+	            break;
+	        }
+	        // Something went completely
+	        // wrong inside the invocation request
+	        // Find an alternate route :(
+	    case InvokeReplyError::Internal: {
+	            cout << "invokeFinished(): Error: internal" << endl;
+	            break;
+	        }
+	        //Message received if the invoke request is successful
+	    default:
+	        cout << "invokeFinished(): Invoke Succeeded" << endl;
+	        break;
+	    }
+
+	    // A little house keeping never hurts...
+	    delete m_invokeTargetReply;
 }

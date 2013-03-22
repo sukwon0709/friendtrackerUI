@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'WebMaps.hpp'
 **
-** Created: Fri Mar 22 13:04:27 2013
+** Created: Fri Mar 22 13:43:10 2013
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.4)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,9 +23,9 @@ static const uint qt_meta_data_WebMaps[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       8,   14, // methods
-       6,   54, // properties
-       1,   78, // enums/sets
+       9,   14, // methods
+       6,   59, // properties
+       1,   83, // enums/sets
        0,    0, // constructors
        0,       // flags
        4,       // signalCount
@@ -41,14 +41,15 @@ static const uint qt_meta_data_WebMaps[] = {
      137,    8,    8,    8, 0x0a,
      166,  161,    8,    8, 0x0a,
      207,    8,    8,    8, 0x0a,
+     221,    8,    8,    8, 0x0a,
 
  // properties: name, type, flags
-     230,  221, 0x0049510b,
-     254,  246, 0x0a495001,
-     266,  246, 0x0a495001,
-     280,  246, 0x0a495001,
-     296,  289, 0x06095001,
-     302,  289, 0x06095001,
+     247,  238, 0x0049510b,
+     271,  263, 0x0a495001,
+     283,  263, 0x0a495001,
+     297,  263, 0x0a495001,
+     313,  306, 0x06095001,
+     319,  306, 0x06095001,
 
  // properties: notify_signal_id
        0,
@@ -59,11 +60,11 @@ static const uint qt_meta_data_WebMaps[] = {
        0,
 
  // enums: name, flags, count, data
-     221, 0x0,    2,   82,
+     238, 0x0,    2,   87,
 
  // enum data: key, value
-     308, uint(WebMaps::BingMaps),
-     317, uint(WebMaps::OpenLayers),
+     325, uint(WebMaps::BingMaps),
+     334, uint(WebMaps::OpenLayers),
 
        0        // eod
 };
@@ -75,10 +76,10 @@ static const char qt_meta_stringdata_WebMaps[] = {
     "myLocationChanged(QGeoCoordinate)\0"
     "nextViewMode()\0positionUpdateTimeout()\0"
     "info\0positionUpdatedHandler(QGeoPositionInfo)\0"
-    "showFriends()\0Provider\0currentProvider\0"
-    "QString\0pageContent\0viewModeTitle\0"
-    "viewMode\0double\0myLat\0myLon\0BingMaps\0"
-    "OpenLayers\0"
+    "showFriends()\0onInvokeResult()\0Provider\0"
+    "currentProvider\0QString\0pageContent\0"
+    "viewModeTitle\0viewMode\0double\0myLat\0"
+    "myLon\0BingMaps\0OpenLayers\0"
 };
 
 void WebMaps::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -95,6 +96,7 @@ void WebMaps::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         case 5: _t->positionUpdateTimeout(); break;
         case 6: _t->positionUpdatedHandler((*reinterpret_cast< const QGeoPositionInfo(*)>(_a[1]))); break;
         case 7: _t->showFriends(); break;
+        case 8: _t->onInvokeResult(); break;
         default: ;
         }
     }
@@ -132,9 +134,9 @@ int WebMaps::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 8)
+        if (_id < 9)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 9;
     }
 #ifndef QT_NO_PROPERTIES
       else if (_c == QMetaObject::ReadProperty) {
