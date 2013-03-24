@@ -19,6 +19,7 @@
 #include <bb/system/InvokeTargetReply>
 #include <bb/cascades/pickers/FilePicker>
 #include <bb/utility/ImageConverter>
+#include <bb/system/SystemToast>
 #include <bb/ImageData>
 
 #include <bps/soundplayer.h>
@@ -81,26 +82,7 @@ bb::cascades::Image Settings::profilePicture()
  */
 void Settings::setProfilePicture(const bb::cascades::Image& profilePicture)
 {
-	cout << "setProfilePicture" << endl;
 	m_profilePicture = profilePicture;
-	bb::utility::ImageConverter imageConverter;
-	bb::ImageData imageData = imageConverter.decode(profilePicture.source());
-	QStringList splitList = profilePicture.source().toString().split(QRegExp("\\."));
-	if (splitList.at(splitList.size()-1) == "jpg") {
-		QByteArray byteData = imageConverter.encode("image/jpeg", imageData);
-		m_userProfile->requestUpdateDisplayPicture(bbm::ImageType::Jpg, byteData);
-	} else if (splitList.at(splitList.size()-1) == "png") {
-		QByteArray byteData = imageConverter.encode("image/png", imageData);
-		m_userProfile->requestUpdateDisplayPicture(bbm::ImageType::Png, byteData);
-	} else if (splitList.at(splitList.size()-1) == "gif") {
-		QByteArray byteData = imageConverter.encode("image/gif", imageData);
-		m_userProfile->requestUpdateDisplayPicture(bbm::ImageType::Gif, byteData);
-	} else if (splitList.at(splitList.size()-1) == "bmp") {
-		QByteArray byteData = imageConverter.encode("image/bmp", imageData);
-		m_userProfile->requestUpdateDisplayPicture(bbm::ImageType::Bmp, byteData);
-	} else {
-		//m_userProfile->requestUpdateDisplayPicture(bbm::ImageType::Unsupported, profilePicture);
-	}
 	emit profilePictureChanged(profilePicture);
 }
 
@@ -124,8 +106,6 @@ QString Settings::statusMessage()
  */
 void Settings::setStatusMessage(const QString& statusMessage)
 {
-	cout << "setStatusMessage" << endl;
-	m_statusMessage = statusMessage;
 	bool result = false;
 	if (statusMessage == "Busy") {
 		result = m_userProfile->requestUpdateStatus(bbm::UserStatus::Busy, statusMessage);
@@ -135,6 +115,7 @@ void Settings::setStatusMessage(const QString& statusMessage)
 		cout << "setStatusMessage - result: " << result << endl;
 	}
 
+	m_statusMessage = statusMessage;
 	emit statusMessageChanged(statusMessage);
 }
 
@@ -158,9 +139,9 @@ QString Settings::personalMessage()
  */
 void Settings::setPersonalMessage(const QString& personalMessage)
 {
-	cout << "setPersonalMessage" << endl;
-	m_personalMessage = personalMessage;
 	m_userProfile->requestUpdatePersonalMessage(personalMessage);
+	m_personalMessage = personalMessage;
+
 	emit personalMessageChanged(personalMessage);
 }
 
@@ -274,6 +255,9 @@ void Settings::cameraCardDone(const bb::system::CardDoneMessage& message)
 		m_filePicker->setTitle("Select Profile Picture");
 		m_filePicker->setMode(FilePickerMode::Picker);
 		m_filePicker->setImageCropEnabled(true);
+		QStringList directories;
+		directories.append("/accounts/1000/shared/");
+		m_filePicker->setDirectories(directories);
 		m_filePicker->open();
 
 		connect(m_filePicker, SIGNAL(fileSelected(const QStringList &)),
@@ -285,7 +269,37 @@ void Settings::updateProfilePicture(const QStringList& images)
 {
 	// only use first image
 	if (images.size() > 0) {
-		cout << "UPDATE: " << images.at(0).toStdString() << endl;
-		setProfilePicture(Image(images.at(0)));
+		/*
+		 * Update BBM with new Profile Picture
+		 */
+		QFile file(images.at(0));
+		if (!file.open(QIODevice::ReadOnly)) return;
+		const QByteArray imageData = file.readAll();
+
+		bbm::ImageType::Type imageType = bbm::ImageType::Unsupported;
+		if (images.at(0).endsWith(QLatin1String(".jpg"), Qt::CaseInsensitive) ||
+				images.at(0).endsWith(QLatin1String(".jpeg"), Qt::CaseInsensitive)) {
+			cout << "selected jpg" << endl;
+			imageType = bb::platform::bbm::ImageType::Jpg;
+		} else if (images.at(0).endsWith(QLatin1String(".png"), Qt::CaseInsensitive)) {
+			imageType = bb::platform::bbm::ImageType::Png;
+		} else if (images.at(0).endsWith(QLatin1String(".gif"), Qt::CaseInsensitive)) {
+			imageType = bb::platform::bbm::ImageType::Gif;
+		} else if (images.at(0).endsWith(QLatin1String(".bmp"), Qt::CaseInsensitive)) {
+			imageType = bb::platform::bbm::ImageType::Bmp;
+		}
+
+		bool result = m_userProfile->requestUpdateDisplayPicture(imageType, imageData);
+		if (!result) {
+			SystemToast toast;
+			toast.setBody("Failed to set Profile Picture!");
+			toast.exec();
+			return;
+		} else {
+			setProfilePicture(Image(images.at(0)));
+			SystemToast toast;
+			toast.setBody("Profile Picture Updated Successfully.");
+			toast.exec();
+		}
 	}
 }

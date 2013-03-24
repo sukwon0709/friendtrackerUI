@@ -66,7 +66,7 @@ public Q_SLOTS:
 	void setPersonalMessageFromBBM(const QString& personalMessage);
 	void onCameraInvokeResult();
 	void cameraCardDone(const bb::system::CardDoneMessage &);
-	void updateProfilePicture(const QStringList &);
+	Q_INVOKABLE void updateProfilePicture(const QStringList &);
 
 signals:
 	void displayNameChanged(const QString& displayName);

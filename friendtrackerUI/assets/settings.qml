@@ -7,14 +7,34 @@ Page {
     }
     
     resizeBehavior: PageResizeBehavior.None
-    
+
+    attachedObjects: [
+        FilePicker {
+            id: filePicker
+            type: FileType.Picture
+            title: "Select Profile Picture"
+            directories: ["/accounts/1000/shared/camera"]
+            imageCropEnabled: true
+
+            onFileSelected: {
+                _settings.updateProfilePicture(selectedFiles);
+            }
+        }
+    ]
 
     actions: [
         ActionItem {
-            title: "Profile Picture"
+            title: "Take Picture"
             ActionBar.placement: ActionBarPlacement.OnBar
             onTriggered: {
                 _settings.openCamera()
+            }
+        },
+        ActionItem {
+            title: "Pick Picture"
+            ActionBar.placement: ActionBarPlacement.OnBar
+            onTriggered: {
+                filePicker.open()
             }
         }
     ]
@@ -49,37 +69,23 @@ Page {
                     orientation: LayoutOrientation.LeftToRight
                 }
 
+                Container {
+                    layout: StackLayout {
+                    }
+                    Label {
+                        id: displayName
+                        text: _settings.displayName
+                        textStyle.color: Color.White
+                        textStyle.fontSize: FontSize.Medium
+                        textStyle.fontWeight: FontWeight.Bold
+                    }
+                }
+                
                 ImageView {
                     id: profilePicture
                     image: _settings.profilePicture
                     preferredHeight: 300
                     preferredWidth: 300
-                    
-                    onImageChanged: {
-                        _settings.profilePicture = image;
-                    }
-                }
-
-                Container {
-                    layout: StackLayout {
-                    }
-                    Label {
-                        text: "Display Name"
-                        textStyle.color: Color.White
-                    }
-                    TextArea {
-                        id: displayName
-                        text: _settings.displayName
-                        textStyle.fontSize: FontSize.Medium
-                        textStyle.fontWeight: FontWeight.Bold
-                    }
-                    Button {
-                        text: "Update"
-                        horizontalAlignment: HorizontalAlignment.Right
-                        onClicked: {
-                            _settings.displayName = displayName.text;
-                        }
-                    }
                 }
             }
 
@@ -112,7 +118,8 @@ Page {
                             customStatusMessage.text = _settings.statusMessage;
                             selectedIndex = 2;
                         }
-                        _settings.statusMessageChangedFromBBM.connect(statusMessageDropDown.selectedValueChanged);
+                        _settings.statusMessageChangedFromBBM
+                        	.connect(statusMessageDropDown.selectedValueChanged);
                         initialized = 1;
                     }
 
