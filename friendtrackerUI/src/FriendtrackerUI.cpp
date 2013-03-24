@@ -61,9 +61,16 @@ FriendtrackerUI::FriendtrackerUI(bb::cascades::Application *app, const QString& 
 
 	// get session key from login
 	connected = QObject::connect(m_serverInterface,
-			SIGNAL(loginSuccess(const QString &)),
+			SIGNAL(onSessionKeyChanged(const QString &)),
 			this,
 			SLOT(setSessionKey(const QString &)));
+	Q_ASSERT(connected);
+
+	// get friendlist from login
+	connected = QObject::connect(m_serverInterface,
+			SIGNAL(onFriendListChanged(const QStringList &)),
+			this,
+			SLOT(setOnlinePpIds(const QStringList &)));
 	Q_ASSERT(connected);
 	Q_UNUSED(connected);
 }
@@ -72,14 +79,34 @@ void FriendtrackerUI::login(const QGeoCoordinate& coord)
 {
 	LoginMessage msg(m_profile->ppId(),
 			coord.latitude(),
-			coord.longitude());
+			coord.longitude(),
+			m_ppIds);
 
 	m_serverInterface->sendMessage(msg);
 }
 
 void FriendtrackerUI::setSessionKey(const QString& sessionKey)
 {
+	cout << "new session key: " << sessionKey.toStdString() << endl;
 	m_sessionKey = sessionKey;
+}
+
+void FriendtrackerUI::setOnlinePpIds(const QStringList& ppIds)
+{
+	cout << "got online ppIds" << endl;
+	// FIXME: it maybe that we should always subscribe to all of user's friends
+	//m_onlinePpIds = ppIds;
+	m_onlinePpIds = m_ppIds;
+
+	// for testing add testusr1, testusr2, testusr3
+	m_onlinePpIds.append(QString("testusr1"));
+	m_onlinePpIds.append(QString("testusr2"));
+	m_onlinePpIds.append(QString("testusr3"));
+}
+
+QStringList FriendtrackerUI::onlinePpIds()
+{
+	return m_onlinePpIds;
 }
 
 void FriendtrackerUI::updateLocation(const QGeoCoordinate& coord)
@@ -100,6 +127,7 @@ void FriendtrackerUI::initWebMaps()
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(m_app);
     qml->setContextProperty("_mapView", m_webMaps);
     qml->setContextProperty("_settings", m_settings);
+    qml->setContextProperty("_friendtracker", this);
 
     // create root object for the UI
     AbstractPane *root = qml->createRootObject<AbstractPane>();
@@ -110,16 +138,18 @@ void FriendtrackerUI::initWebMaps()
 void FriendtrackerUI::initUserProfile()
 {
 	m_profile = new UserProfile(&m_regHandler->context(), this);
+	/*
 	cout << "my display name: " << m_profile->displayName().toStdString() << endl;
 	cout << "my personal msg: " << m_profile->personalMessage().toStdString() << endl;
 	cout << "my status msg: " << m_profile->statusMessage().toStdString() << endl;
 	cout << "my ppId: " << m_profile->ppId().toStdString() << endl;
+	*/
 
 	ContactService cs(&m_regHandler->context(), 0);
-	if (cs.isValid()) cout << "contact service is valid " << cs.contactCount() << endl;
+	//if (cs.isValid()) cout << "contact service is valid " << cs.contactCount() << endl;
 	QList<Contact> contacts = cs.contacts();
-	vector<QString> ppIds;
-	cout << "getting contacts" << endl;
+	QStringList ppIds;
+	//cout << "getting contacts" << endl;
 	for (int i = 0; i < contacts.size(); i++) {
 		stringstream ss;
 		ss << "ppId: " << contacts.at(i).ppId().toStdString()
@@ -129,8 +159,9 @@ void FriendtrackerUI::initUserProfile()
 		SystemToast toast;
 		toast.setBody(QString(ss.str().c_str()));
 		toast.exec();
-		ppIds.push_back(contacts.at(i).ppId());
+		ppIds.append(contacts.at(i).ppId());
 	}
+	m_ppIds = ppIds;
 	/*using namespace bb::pim;
 	bb::pim::contacts::ContactListFilters filter;
 	filter = filter.setLimit(10000);

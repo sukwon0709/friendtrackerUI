@@ -29,7 +29,26 @@
                 initMaps($$INIT_LAT$$, $$INIT_LNG$$);
             }
         </script>
-
+        
+        <style type="text/css">
+        .blackText div {
+        	color: black !important;
+        }
+        a.blackText {
+        	background-image: url("local:///assets/images/Map_pin2.png");
+        	background-repeat: no-repeat;
+        }
+        a.blackText img {
+        	margin-left: 30px;
+        	margin-top: 22px;
+        	padding: 1px;
+        	border: 1px solid: #f5f5dc;
+        	background-color: #021a40;
+        	-webkit-border-radius: 2px;
+        	-moz-border-radius: 2px;
+        	border-radius: 15px;
+        }
+		</style>
     </head>
     <body onload="load()">
         <div id="map_canvas"></div>

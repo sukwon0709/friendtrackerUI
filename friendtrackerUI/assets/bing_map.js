@@ -18,6 +18,7 @@
 var googleMap;
 var bingMap;
 var markersArray = [];
+var friends = [];
 
 // pushpin for the user
 var mypin;
@@ -47,23 +48,29 @@ function initMaps(lat, lng) {
     Microsoft.Maps.Events.addHandler(bingMap, 'click', clicked);
     
     // put pushpin for the user
-    var iconpath = "local:///assets/images/pin.png";
+    /*var iconpath = "local:///assets/images/pin.png";
     mypin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(myLat, myLong),{
     	icon:iconpath, height:60, width:60, anchor:new Microsoft.Maps.Point(20,58), draggable: false});
-    bingMap.entities.push(mypin);
+    bingMap.entities.push(mypin);*/
+    createPushPin(myLat, myLong, "Me", "local:///assets/images/kitten48.jpg");
     Microsoft.Maps.Events.addHandler(mypin, 'click', markerClicked);
-    
-    var friends = ["testusr1", "testusr2", "testusr3", "testusr4", "testusr5", "testusr6"];
-    startSubscription(friends, this);
     
     console.log("Done init BingMaps");
 }
 
+function addOnlineFriend(friend) {
+	friends.push(friend);
+}
+
+function subscribe() {
+	startSubscription(friends, this);
+}
+
 function plot(data) {
 	if (data.user in friendsPins) {
-		updatePushPin(data.location.x, data.location.y, data.user, "local:///assets/images/pin.png");
+		updatePushPin(data.location.x, data.location.y, data.user, "local:///assets/images/kitten48.jpg");
 	} else {
-		createPushPin(data.location.x, data.location.y, data.user, "local:///assets/images/pin.png");	
+		createPushPin(data.location.x, data.location.y, data.user, "local:///assets/images/kitten48.jpg");	
 	}
 }
 
@@ -108,7 +115,16 @@ function setMapTypeId(mapType) {
 
 // create a marker / push-pin
 function createPushPin(lat, lon, title, iconpath) {
-    var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(lat, lon), {icon:iconpath, height:60, width:60, anchor:new Microsoft.Maps.Point(20,58), draggable: true});
+    var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(lat, lon), {
+    	text: title,
+    	textOffset: new Microsoft.Maps.Point(-12, 6),
+    	width: 128,
+    	typeName: 'blackText',
+    	icon:iconpath,
+    	height:128,
+    	anchor:new Microsoft.Maps.Point(20,50),
+    	draggable: true
+    });
     bingMap.entities.push(pin);
     Microsoft.Maps.Events.addHandler(pin, 'click', markerClicked);
     markersArray.push(pin);
