@@ -57,11 +57,13 @@ public:
 
 public Q_SLOTS:
 	void setDisplayName(const QString& displayName);
+	void setDisplayNameFromBBM(const QString& displayName);
 	void setProfilePicture(const bb::cascades::Image& profilePicture);
-	void setProfilePicture(bb::platform::bbm::ImageType::Type mimeType, const QByteArray& profilePicture);
+	void setProfilePictureFromBBM(bb::platform::bbm::ImageType::Type mimeType, const QByteArray& profilePicture);
 	void setStatusMessage(const QString& statusMessage);
-	void setStatusMessage(bb::platform::bbm::UserStatus::Type statusType, const QString& statusMessage);
+	void setStatusMessageFromBBM(bb::platform::bbm::UserStatus::Type statusType, const QString& statusMessage);
 	void setPersonalMessage(const QString& personalMessage);
+	void setPersonalMessageFromBBM(const QString& personalMessage);
 	void onCameraInvokeResult();
 	void cameraCardDone(const bb::system::CardDoneMessage &);
 	void updateProfilePicture(const QStringList &);
@@ -70,6 +72,7 @@ signals:
 	void displayNameChanged(const QString& displayName);
 	void profilePictureChanged(const bb::cascades::Image& profilePicture);
 	void statusMessageChanged(const QString& statusMessage);
+	void statusMessageChangedFromBBM(const QString& statusMessage);
 	void personalMessageChanged(const QString& personalMessage);
 
 private:

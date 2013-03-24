@@ -18,6 +18,8 @@
 #include <bb/system/CardDoneMessage>
 #include <bb/system/InvokeTargetReply>
 #include <bb/cascades/pickers/FilePicker>
+#include <bb/utility/ImageConverter>
+#include <bb/ImageData>
 
 #include <bps/soundplayer.h>
 
@@ -52,10 +54,21 @@ QString Settings::displayName()
 	return m_displayName;
 }
 
+/*
+ * Called when the user changes from Settings
+ */
 void Settings::setDisplayName(const QString& displayName)
 {
 	m_displayName = displayName;
 	emit displayNameChanged(displayName);
+}
+
+/*
+ * Called when the user changes from BBM
+ */
+void Settings::setDisplayNameFromBBM(const QString& displayName)
+{
+	m_displayName = displayName;
 }
 
 bb::cascades::Image Settings::profilePicture()
@@ -63,16 +76,42 @@ bb::cascades::Image Settings::profilePicture()
 	return m_profilePicture;
 }
 
+/*
+ * Called when the user changes from Settings
+ */
 void Settings::setProfilePicture(const bb::cascades::Image& profilePicture)
 {
+	cout << "setProfilePicture" << endl;
 	m_profilePicture = profilePicture;
+	bb::utility::ImageConverter imageConverter;
+	bb::ImageData imageData = imageConverter.decode(profilePicture.source());
+	QStringList splitList = profilePicture.source().toString().split(QRegExp("\\."));
+	if (splitList.at(splitList.size()-1) == "jpg") {
+		QByteArray byteData = imageConverter.encode("image/jpeg", imageData);
+		m_userProfile->requestUpdateDisplayPicture(bbm::ImageType::Jpg, byteData);
+	} else if (splitList.at(splitList.size()-1) == "png") {
+		QByteArray byteData = imageConverter.encode("image/png", imageData);
+		m_userProfile->requestUpdateDisplayPicture(bbm::ImageType::Png, byteData);
+	} else if (splitList.at(splitList.size()-1) == "gif") {
+		QByteArray byteData = imageConverter.encode("image/gif", imageData);
+		m_userProfile->requestUpdateDisplayPicture(bbm::ImageType::Gif, byteData);
+	} else if (splitList.at(splitList.size()-1) == "bmp") {
+		QByteArray byteData = imageConverter.encode("image/bmp", imageData);
+		m_userProfile->requestUpdateDisplayPicture(bbm::ImageType::Bmp, byteData);
+	} else {
+		//m_userProfile->requestUpdateDisplayPicture(bbm::ImageType::Unsupported, profilePicture);
+	}
 	emit profilePictureChanged(profilePicture);
 }
 
-void Settings::setProfilePicture(bbm::ImageType::Type mimeType, const QByteArray& profilePicture)
+/*
+ * Called when the user changes from BBM
+ */
+void Settings::setProfilePictureFromBBM(bbm::ImageType::Type mimeType, const QByteArray& profilePicture)
 {
 	Q_UNUSED(mimeType);
-	setProfilePicture(profilePicture);
+	m_profilePicture = profilePicture;
+	emit profilePictureChanged(profilePicture);
 }
 
 QString Settings::statusMessage()
@@ -80,16 +119,33 @@ QString Settings::statusMessage()
 	return m_statusMessage;
 }
 
+/*
+ * Called when the user changes from Settings
+ */
 void Settings::setStatusMessage(const QString& statusMessage)
 {
+	cout << "setStatusMessage" << endl;
 	m_statusMessage = statusMessage;
+	bool result = false;
+	if (statusMessage == "Busy") {
+		result = m_userProfile->requestUpdateStatus(bbm::UserStatus::Busy, statusMessage);
+		cout << "setStatusMessage - result: " << result << endl;
+	} else {
+		m_userProfile->requestUpdateStatus(bbm::UserStatus::Available, statusMessage);
+		cout << "setStatusMessage - result: " << result << endl;
+	}
+
 	emit statusMessageChanged(statusMessage);
 }
 
-void Settings::setStatusMessage(bbm::UserStatus::Type statusType, const QString& statusMessage)
+/*
+ * Called when the user changes from BBM
+ */
+void Settings::setStatusMessageFromBBM(bbm::UserStatus::Type statusType, const QString& statusMessage)
 {
 	Q_UNUSED(statusType);
-	setStatusMessage(statusMessage);
+	m_statusMessage = statusMessage;
+	emit statusMessageChangedFromBBM(statusMessage);
 }
 
 QString Settings::personalMessage()
@@ -97,7 +153,21 @@ QString Settings::personalMessage()
 	return m_personalMessage;
 }
 
+/*
+ * Called when the user changes from Settings
+ */
 void Settings::setPersonalMessage(const QString& personalMessage)
+{
+	cout << "setPersonalMessage" << endl;
+	m_personalMessage = personalMessage;
+	m_userProfile->requestUpdatePersonalMessage(personalMessage);
+	emit personalMessageChanged(personalMessage);
+}
+
+/*
+ * Called when the user changes from BBM
+ */
+void Settings::setPersonalMessageFromBBM(const QString& personalMessage)
 {
 	m_personalMessage = personalMessage;
 	emit personalMessageChanged(personalMessage);
@@ -109,16 +179,16 @@ void Settings::initUserProfileFromBBM()
 		// get profile info
 		m_userProfile = new bbm::UserProfile(&m_regHandler->context());
 		bool result = connect(m_userProfile, SIGNAL(displayNameUpdated(const QString &)),
-				this, SLOT(setDisplayName(const QString &)));
+				this, SLOT(setDisplayNameFromBBM(const QString &)));
 		Q_ASSERT(result);
 		result = connect(m_userProfile, SIGNAL(statusUpdated(bb::platform::bbm::UserStatus::Type, const QString &)),
-				this, SLOT(setStatusMessage(bb::platform::bbm::UserStatus::Type, const QString &)));
+				this, SLOT(setStatusMessageFromBBM(bb::platform::bbm::UserStatus::Type, const QString &)));
 		Q_ASSERT(result);
 		result = connect(m_userProfile, SIGNAL(displayPictureUpdated(bb::platform::bbm::ImageType::Type, const QByteArray &)),
-				this, SLOT(setProfilePicture(bb::platform::bbm::ImageType::Type, const QByteArray &)));
+				this, SLOT(setProfilePictureFromBBM(bb::platform::bbm::ImageType::Type, const QByteArray &)));
 		Q_ASSERT(result);
 		result = connect(m_userProfile, SIGNAL(personalMessageUpdated(const QString &)),
-				this, SLOT(setPersonalMessage(const QString &)));
+				this, SLOT(setPersonalMessageFromBBM(const QString &)));
 		Q_ASSERT(result);
 
 		m_displayName = m_userProfile->displayName();
