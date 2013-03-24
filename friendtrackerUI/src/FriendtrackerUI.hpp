@@ -6,6 +6,7 @@
 #include <bb/platform/bbm/UserProfile>
 #include "WebMaps.hpp"
 #include "RegistrationHandler.hpp"
+#include "Settings.hpp"
 
 #include <QtLocationSubset/QGeoCoordinate>
 
@@ -47,6 +48,7 @@ private:
 	UserProfile* m_profile;
 	QString m_sessionKey;
 	ServerInterface* m_serverInterface;
+	Settings* m_settings;
 
 };
 

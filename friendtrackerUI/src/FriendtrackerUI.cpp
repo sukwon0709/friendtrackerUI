@@ -34,6 +34,7 @@ FriendtrackerUI::FriendtrackerUI(bb::cascades::Application *app, const QString& 
 , m_profile(0)
 , m_sessionKey("")
 , m_serverInterface(new ServerInterface(this))
+, m_settings(new Settings(this, m_regHandler))
 
 {
 	// get user profile when bbm registration succeeds
@@ -98,6 +99,7 @@ void FriendtrackerUI::initWebMaps()
     // set parent to created document to ensure it exists for the whole application lifetime
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(m_app);
     qml->setContextProperty("_mapView", m_webMaps);
+    qml->setContextProperty("_settings", m_settings);
 
     // create root object for the UI
     AbstractPane *root = qml->createRootObject<AbstractPane>();

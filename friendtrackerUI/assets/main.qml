@@ -1,8 +1,40 @@
 // Navigation pane project template
 import bb.cascades 1.0
+import bb.system 1.0
 
 NavigationPane {
     id: navigationPane
+    Menu.definition: MenuDefinition {
+        // help action
+        helpAction: HelpActionItem {
+        	onTriggered: {
+                helpDialog.show()
+            }
+            attachedObjects: [
+                SystemDialog {
+                    id: helpDialog
+                    title: "Help"
+                    body: "FriendTrackerUI is developed by Bill Chen, Lu Zou, Sukwon Oh, Yuguang Zhang"
+                }
+            ]
+        }
+
+        // settings action
+        settingsAction: SettingsActionItem {
+        	onTriggered: {
+                //var settingsPageObj = settingsPage.createObject();
+                //Application.menuEnabled = false;
+                //navigationPane.push(settingsPageObj);
+                _settings.show();
+            }
+        	attachedObjects: [
+                ComponentDefinition {
+                    id: settingsPage
+                    source: "settings.qml"
+                }
+        	]
+    	}
+    }
     Page {
         actions: [
             ActionItem {
