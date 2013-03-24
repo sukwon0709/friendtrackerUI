@@ -7,6 +7,7 @@
 
 
 #include "Settings.hpp"
+#include "RegistrationHandler.hpp"
 
 #include <bb/cascades/AbstractPane>
 #include <bb/cascades/Application>
@@ -15,6 +16,8 @@
 #include <bb/system/InvokeRequest>
 #include <bb/system/InvokeManager>
 #include <bb/system/CardDoneMessage>
+#include <bb/system/InvokeTargetReply>
+#include <bb/cascades/pickers/FilePicker>
 
 #include <bps/soundplayer.h>
 
@@ -31,8 +34,10 @@ Settings::Settings(QObject* parent, RegistrationHandler* regHandler)
 : QObject(parent)
 , m_parent(parent)
 , m_regHandler(regHandler)
+, m_userProfile(0)
 , m_cameraInvokeStatus(0)
 , m_filePicker(0)
+, m_initialized(false)
 {
 	//qmlRegisterType < Camera > ("bb.cascades.multimedia", 1, 0, "Camera");
 }
@@ -98,32 +103,33 @@ void Settings::setPersonalMessage(const QString& personalMessage)
 	emit personalMessageChanged(personalMessage);
 }
 
-void Settings::show()
+void Settings::initUserProfileFromBBM()
 {
-	// get profile info
-	bbm::UserProfile* profile = new bbm::UserProfile(&m_regHandler->context());
-	bool result = connect(profile, SIGNAL(displayNameUpdated(const QString &)),
-			this, SLOT(setDisplayName(const QString &)));
-	Q_ASSERT(result);
-	result = connect(profile, SIGNAL(statusUpdated(bb::platform::bbm::UserStatus::Type, const QString &)),
-			this, SLOT(setStatusMessage(bb::platform::bbm::UserStatus::Type, const QString &)));
-	Q_ASSERT(result);
-	result = connect(profile, SIGNAL(displayPictureUpdated(bb::platform::bbm::ImageType::Type, const QByteArray &)),
-			this, SLOT(setProfilePicture(bb::platform::bbm::ImageType::Type, const QByteArray &)));
-	Q_ASSERT(result);
-	result = connect(profile, SIGNAL(personalMessageUpdated(const QString &)),
-			this, SLOT(setPersonalMessage(const QString &)));
-	Q_ASSERT(result);
+	if (!m_initialized) {
+		// get profile info
+		m_userProfile = new bbm::UserProfile(&m_regHandler->context());
+		bool result = connect(m_userProfile, SIGNAL(displayNameUpdated(const QString &)),
+				this, SLOT(setDisplayName(const QString &)));
+		Q_ASSERT(result);
+		result = connect(m_userProfile, SIGNAL(statusUpdated(bb::platform::bbm::UserStatus::Type, const QString &)),
+				this, SLOT(setStatusMessage(bb::platform::bbm::UserStatus::Type, const QString &)));
+		Q_ASSERT(result);
+		result = connect(m_userProfile, SIGNAL(displayPictureUpdated(bb::platform::bbm::ImageType::Type, const QByteArray &)),
+				this, SLOT(setProfilePicture(bb::platform::bbm::ImageType::Type, const QByteArray &)));
+		Q_ASSERT(result);
+		result = connect(m_userProfile, SIGNAL(personalMessageUpdated(const QString &)),
+				this, SLOT(setPersonalMessage(const QString &)));
+		Q_ASSERT(result);
 
-	m_displayName = profile->displayName();
-	m_profilePicture = profile->displayPicture();
-	m_statusMessage = profile->statusMessage();
-	m_personalMessage = profile->personalMessage();
+		m_displayName = m_userProfile->displayName();
+		m_profilePicture = m_userProfile->displayPicture();
+		m_statusMessage = m_userProfile->statusMessage();
+		m_personalMessage = m_userProfile->personalMessage();
 
-	QmlDocument* qml = QmlDocument::create("asset:///settings.qml").parent(this);
-	qml->setContextProperty("_settings", this);
-	AbstractPane* root = qml->createRootObject<AbstractPane>();
-	Application::instance()->setScene(root);
+		m_initialized = true;
+	}
+
+	// TODO: connect signal to BBM
 }
 
 /**

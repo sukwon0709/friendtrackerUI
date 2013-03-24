@@ -16,16 +16,26 @@
 #include <bb/cascades/Image>
 #include <bb/platform/bbm/UserStatus>
 #include <bb/platform/bbm/ImageType>
-#include <bb/system/InvokeTargetReply>
-#include <bb/cascades/pickers/FilePicker>
 
-#include "RegistrationHandler.hpp"
-
+// forward decl
 namespace bb {
 	namespace system {
 		class CardDoneMessage;
+		class InvokeTargetReply;
+	}
+	namespace platform {
+		namespace bbm {
+			class UserProfile;
+		}
+	}
+	namespace cascades {
+		namespace pickers {
+			class FilePicker;
+		}
 	}
 }
+class RegistrationHandler;
+
 class Settings : public QObject {
 	Q_OBJECT
 	Q_PROPERTY(QString displayName READ displayName WRITE setDisplayName NOTIFY displayNameChanged)
@@ -37,7 +47,7 @@ public:
 	Settings(QObject* parent, RegistrationHandler* regHandler);
 	virtual ~Settings();
 
-	Q_INVOKABLE void show();
+	Q_INVOKABLE void initUserProfileFromBBM();
 	Q_INVOKABLE void openCamera();
 
 	QString displayName();
@@ -63,14 +73,17 @@ signals:
 	void personalMessageChanged(const QString& personalMessage);
 
 private:
-	QString m_displayName;
-	bb::cascades::Image m_profilePicture;
 	QObject* m_parent;
 	RegistrationHandler* m_regHandler;
-	QString m_statusMessage;
-	QString m_personalMessage;
+	bb::platform::bbm::UserProfile* m_userProfile;
 	bb::system::InvokeTargetReply* m_cameraInvokeStatus;
 	bb::cascades::pickers::FilePicker* m_filePicker;
+	bool m_initialized;
+
+	QString m_displayName;
+	bb::cascades::Image m_profilePicture;
+	QString m_statusMessage;
+	QString m_personalMessage;
 };
 
 
