@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'FriendtrackerUI.hpp'
 **
-** Created: Sun Mar 24 19:45:46 2013
+** Created: Mon Mar 25 21:13:40 2013
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.4)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,8 +23,8 @@ static const uint qt_meta_data_FriendtrackerUI[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      10,   14, // methods
-       1,   64, // properties
+      17,   14, // methods
+       1,   99, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
@@ -43,9 +43,18 @@ static const uint qt_meta_data_FriendtrackerUI[] = {
      188,   16,   16,   16, 0x0a,
      217,   16,  205,   16, 0x0a,
      231,   42,   16,   16, 0x0a,
+     259,   16,   16,   16, 0x0a,
+     275,   16,   16,   16, 0x0a,
+
+ // methods: signature, parameters, type, tag, flags
+     320,  310,   16,   16, 0x02,
+     343,   16,   16,   16, 0x02,
+     361,   16,   16,   16, 0x02,
+     391,  389,  381,   16, 0x02,
+     420,  389,   16,   16, 0x02,
 
  // properties: name, type, flags
-     259,  205, 0x0b495103,
+     450,  205, 0x0b495103,
 
  // properties: notify_signal_id
        1,
@@ -61,7 +70,12 @@ static const char qt_meta_stringdata_FriendtrackerUI[] = {
     "updateLocation(QGeoCoordinate)\0"
     "setSessionKey(QString)\0endApplication()\0"
     "QStringList\0onlinePpIds()\0"
-    "setOnlinePpIds(QStringList)\0onlinePpIds\0"
+    "setOnlinePpIds(QStringList)\0pullLocations()\0"
+    "updateFriendsLocation(QList<User>)\0"
+    "frequency\0setRegularMode(double)\0"
+    "setRealtimeMode()\0setVisibility(bool)\0"
+    "QString\0,\0getValueFor(QString,QString)\0"
+    "saveValueFor(QString,QString)\0onlinePpIds\0"
 };
 
 void FriendtrackerUI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -81,6 +95,14 @@ void FriendtrackerUI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         case 8: { QStringList _r = _t->onlinePpIds();
             if (_a[0]) *reinterpret_cast< QStringList*>(_a[0]) = _r; }  break;
         case 9: _t->setOnlinePpIds((*reinterpret_cast< const QStringList(*)>(_a[1]))); break;
+        case 10: _t->pullLocations(); break;
+        case 11: _t->updateFriendsLocation((*reinterpret_cast< const QList<User>(*)>(_a[1]))); break;
+        case 12: _t->setRegularMode((*reinterpret_cast< double(*)>(_a[1]))); break;
+        case 13: _t->setRealtimeMode(); break;
+        case 14: _t->setVisibility((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 15: { QString _r = _t->getValueFor((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
+        case 16: _t->saveValueFor((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
         default: ;
         }
     }
@@ -118,9 +140,9 @@ int FriendtrackerUI::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 10)
+        if (_id < 17)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 10;
+        _id -= 17;
     }
 #ifndef QT_NO_PROPERTIES
       else if (_c == QMetaObject::ReadProperty) {

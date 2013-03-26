@@ -17,7 +17,7 @@
 <html>
     <head>
         <title>Maps Sample</title>
-        <meta name="viewport" content="width=device-width">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 		<script src="local:///assets/lib.js"></script>
         <script src="$$SCRIPT_FILE$$"></script>
@@ -28,6 +28,7 @@
             function load(){
                 initMaps($$INIT_LAT$$, $$INIT_LNG$$);
             }
+            placeholderImage = "local:///assets/images/kitten48.jpg"
         </script>
         
         <style type="text/css">
@@ -35,7 +36,7 @@
         	color: black !important;
         }
         a.blackText {
-        	background-image: url("local:///assets/images/pin_map.png");
+        	background-image: url("local:///assets/images/Map_pin2.png");
         	background-repeat: no-repeat;
         }
         a.blackText img {
@@ -44,8 +45,8 @@
         	padding: 1px;
         	border: 1px solid: #f5f5dc;
         	background-color: #021a40;
-        	-webkit-border-radius: 2px;
-        	-moz-border-radius: 2px;
+        	-webkit-border-radius: 15px;
+        	-moz-border-radius: 15px;
         	border-radius: 15px;
         }
 		</style>
