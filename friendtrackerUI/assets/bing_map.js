@@ -127,7 +127,7 @@ function createPushPin(lat, lon, title, iconpath) {
     	typeName: 'blackText',
     	icon:iconpath,
     	height:128,
-    	anchor:new Microsoft.Maps.Point(20,50),
+    	anchor:new Microsoft.Maps.Point(52,112),
     	//anchor:new Microsoft.Maps.Point(142,310),
     	draggable: false
     });

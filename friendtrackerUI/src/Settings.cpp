@@ -275,29 +275,43 @@ void Settings::updateProfilePicture(const QStringList& images)
 		 */
 		QFile file(images.at(0));
 		if (!file.open(QIODevice::ReadOnly)) return;
-		const QByteArray imageData = file.readAll();
+		const QByteArray imageInByteArray = file.readAll();
 
+		QString imageFormat;
 		bbm::ImageType::Type imageType = bbm::ImageType::Unsupported;
 		if (images.at(0).endsWith(QLatin1String(".jpg"), Qt::CaseInsensitive) ||
 				images.at(0).endsWith(QLatin1String(".jpeg"), Qt::CaseInsensitive)) {
-			cout << "selected jpg" << endl;
+			imageFormat = "image/jpeg";
 			imageType = bb::platform::bbm::ImageType::Jpg;
 		} else if (images.at(0).endsWith(QLatin1String(".png"), Qt::CaseInsensitive)) {
+			imageFormat = "image/png";
 			imageType = bb::platform::bbm::ImageType::Png;
 		} else if (images.at(0).endsWith(QLatin1String(".gif"), Qt::CaseInsensitive)) {
+			imageFormat = "image/gif";
 			imageType = bb::platform::bbm::ImageType::Gif;
 		} else if (images.at(0).endsWith(QLatin1String(".bmp"), Qt::CaseInsensitive)) {
+			imageFormat = "image/bmp";
 			imageType = bb::platform::bbm::ImageType::Bmp;
 		}
 
-		bool result = m_userProfile->requestUpdateDisplayPicture(imageType, imageData);
+		QImage scaledImage;
+		scaledImage.loadFromData(imageInByteArray);
+		scaledImage = scaledImage.scaled(400, 400, Qt::KeepAspectRatio);	// Scaled Image must be less than 32KB
+
+		const QImage swappedImage = scaledImage.rgbSwapped();
+		bb::ImageData imageData = bb::ImageData::fromPixels(swappedImage.bits(),
+				bb::PixelFormat::RGBX, swappedImage.width(), swappedImage.height(), swappedImage.bytesPerLine());
+
+		QByteArray scaledImageInByteArray = bb::utility::ImageConverter::encode(imageFormat, imageData);
+
+		bool result = m_userProfile->requestUpdateDisplayPicture(imageType, scaledImageInByteArray);
 		if (!result) {
 			SystemToast toast;
 			toast.setBody("Failed to set Profile Picture!");
 			toast.exec();
 			return;
 		} else {
-			setProfilePicture(Image(images.at(0)));
+			setProfilePicture(Image(imageData));
 			SystemToast toast;
 			toast.setBody("Profile Picture Updated Successfully.");
 			toast.exec();
