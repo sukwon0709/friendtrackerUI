@@ -195,6 +195,24 @@ void FriendtrackerUI::updateFriendsLocation(const QList<User>& friends)
 void FriendtrackerUI::initWebMaps()
 {
 	cout << "initWebMaps started" << endl;
+	// save user's profile before loading the map
+	// write an image file with user's profile picture
+	UserProfile profile(&m_regHandler->context());
+	const QByteArray& displayPicture = profile.displayPicture();
+	cout << "WRITING IMAGE" << endl;
+	QImage imageToWrite;
+	if (!imageToWrite.loadFromData(displayPicture)) {
+		cout << "failed to load profile picture for saving!" << endl;
+	} else {
+		imageToWrite = imageToWrite.scaled(80, 80, Qt::KeepAspectRatio);	// profile picture is 80x80
+		if (!imageToWrite.save("app/native/assets/profile.jpg", "JPG")) {
+			cout << "failed to save profile picture!" << endl;
+		} else {
+			cout << "SUCCESS IMAGE WRITE!" << endl;
+		}
+	}
+	cout << "DONE WRITING IMAGE" << endl;
+
     // create scene document from main.qml asset
     // set parent to created document to ensure it exists for the whole application lifetime
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(m_app);
