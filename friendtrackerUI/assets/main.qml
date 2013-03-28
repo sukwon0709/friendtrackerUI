@@ -113,6 +113,11 @@ NavigationPane {
                 var script = "updatePushPin(" + x + ", " + y + ", \"" + ppId + "\")";
                 qwvMapView.evaluateJavaScript(script, JavaScriptWorld.Normal);
             }
+            function updateProfilePicture() {
+                console.log("SIGNALLED UPDATEPROFILE PICTURE");
+                var script = "updateProfilePicture()";
+                qwvMapView.evaluateJavaScript(script, JavaScriptWorld.Normal);
+            }
             //! [1]
             
             ScrollView {
@@ -133,6 +138,7 @@ NavigationPane {
                         _mapView.subscribe.connect(map.subscribe);
                         _mapView.unsubscribe.connect(map.unsubscribe);
                         _mapView.friendLocationChanged.connect(map.updateLocation);
+                        _friendtracker.updateProfilePictureOnMap.connect(map.updateProfilePicture);
                     }
                 
                 	onLoadingChanged: {

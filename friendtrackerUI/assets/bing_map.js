@@ -25,6 +25,9 @@ var websocket = null;
 var mypin;
 var friendsPins = {};
 
+// hack to get around image caching on user's profile picture
+var counter = 1;
+
 function initMaps(lat, lng) {
     console.log("init BingMaps");
     var myLat = lat;
@@ -57,6 +60,19 @@ function initMaps(lat, lng) {
     Microsoft.Maps.Events.addHandler(mypin, 'click', markerClicked);
     
     console.log("Done init BingMaps");
+}
+
+function updateProfilePicture() {
+	var prevPin = friendsPins["Me"];
+	var lat = prevPin.getLocation().latitude;
+	var lon = prevPin.getLocation().longitude;
+	console.log("UPDATE PROFILE PICTURE JAVASCRIPT " + lat + "," + lon);
+    bingMap.entities.remove(prevPin);
+	prevPin = null;
+	
+	var path = "local:///assets/profile" + counter.toString() + ".jpg";
+	createPushPin(lat, lon, "Me", path);
+	counter = counter + 1;
 }
 
 function addOnlineFriend(friend) {
@@ -131,10 +147,15 @@ function createPushPin(lat, lon, title, iconpath) {
     	//anchor:new Microsoft.Maps.Point(142,310),
     	draggable: false
     });
+    console.log("1111111111111111");
     bingMap.entities.push(pin);
+    console.log("2222222222222222");
     Microsoft.Maps.Events.addHandler(pin, 'click', markerClicked);
+    console.log("3333333333333333");
     markersArray.push(pin);
+    console.log("4444444444444444");
     friendsPins[title] = pin;
+    console.log("5555555555555555");
 }
 
 function updatePushPin(lat, lon, title) {
@@ -145,7 +166,7 @@ function updatePushPin(lat, lon, title) {
 function removeAllPins() {
     if (markersArray) {
         for (i in markersArray) {
-            bingMap.entities.remove(markersArray[i])
+            bingMap.entities.remove(markersArray[i]);
         }
     }
 }

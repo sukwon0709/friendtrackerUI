@@ -40,6 +40,7 @@ FriendtrackerUI::FriendtrackerUI(bb::cascades::Application *app, const QString& 
 , m_settings(new Settings(this, m_regHandler))
 , m_regularModeTimer(new QTimer(this))
 , m_visibility(1)
+, m_numProfilePictureUpdates(0)
 
 {
 	// get user profile when bbm registration succeeds
@@ -192,26 +193,73 @@ void FriendtrackerUI::updateFriendsLocation(const QList<User>& friends)
 	}
 }
 
-void FriendtrackerUI::initWebMaps()
+/*
+ * When the profile picture changed, save to disk for map to load.
+ */
+void FriendtrackerUI::updateProfilePicture(const QByteArray& imageData)
 {
-	cout << "initWebMaps started" << endl;
-	// save user's profile before loading the map
+	m_numProfilePictureUpdates++;
+	saveUserProfilePicture(imageData);
+	emit updateProfilePictureOnMap();
+}
+
+/*
+ * Reads user's profile picture from BBM and then write to disk
+ * for loading on the map later.
+ */
+void FriendtrackerUI::saveUserProfilePicture()
+{
 	// write an image file with user's profile picture
 	UserProfile profile(&m_regHandler->context());
 	const QByteArray& displayPicture = profile.displayPicture();
 	cout << "WRITING IMAGE" << endl;
+
+	saveUserProfilePicture(displayPicture);
+}
+
+/*
+ * Save the given image data in byte array to disk.
+ */
+void FriendtrackerUI::saveUserProfilePicture(const QByteArray& imageData)
+{
 	QImage imageToWrite;
-	if (!imageToWrite.loadFromData(displayPicture)) {
+	if (!imageToWrite.loadFromData(imageData)) {
 		cout << "failed to load profile picture for saving!" << endl;
 	} else {
 		imageToWrite = imageToWrite.scaled(80, 80, Qt::KeepAspectRatio);	// profile picture is 80x80
-		if (!imageToWrite.save("app/native/assets/profile.jpg", "JPG")) {
+		stringstream ss;
+		if (m_numProfilePictureUpdates == 0) {
+			ss << "app/native/assets/profile.jpg";
+		} else {
+			if (m_numProfilePictureUpdates == 1) {
+				m_previousProfilePicturePath = "app/native/assets/profile.jpg";
+			} else {
+				stringstream ss2;
+				ss2 << "app/native/assets/profile" << m_numProfilePictureUpdates-1 << ".jpg";
+				m_previousProfilePicturePath = ss2.str().c_str();
+			}
+			ss << "app/native/assets/profile" << m_numProfilePictureUpdates << ".jpg";
+		}
+		if (!imageToWrite.save(ss.str().c_str(), "JPG")) {
 			cout << "failed to save profile picture!" << endl;
 		} else {
 			cout << "SUCCESS IMAGE WRITE!" << endl;
+			// remove previous profile images
+			QFile::remove(m_previousProfilePicturePath.toStdString().c_str());
 		}
 	}
 	cout << "DONE WRITING IMAGE" << endl;
+}
+
+void FriendtrackerUI::initWebMaps()
+{
+	cout << "initWebMaps started" << endl;
+
+	// save user's profile before loading the map
+	saveUserProfilePicture();
+	bool result = connect(m_settings, SIGNAL(profilePictureChanged(const QByteArray &)),
+			this, SLOT(updateProfilePicture(const QByteArray &)));
+	Q_ASSERT(result);
 
     // create scene document from main.qml asset
     // set parent to created document to ensure it exists for the whole application lifetime

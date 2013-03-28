@@ -120,21 +120,21 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="../assets/main.qml" line="167"/>
+        <location filename="../assets/main.qml" line="173"/>
         <source>centerChanged:
 World: %1, %2
 Pixel: %3, %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/main.qml" line="179"/>
+        <location filename="../assets/main.qml" line="185"/>
         <source>clicked:
 World: %1, %2
 Pixel: %3, %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/main.qml" line="191"/>
+        <location filename="../assets/main.qml" line="197"/>
         <source>markerClicked:
 World: %1, %2
 Pixel: %3, %4</source>

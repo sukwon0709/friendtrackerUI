@@ -74,7 +74,8 @@ public Q_SLOTS:
 
 signals:
 	void displayNameChanged(const QString& displayName);
-	void profilePictureChanged(const bb::cascades::Image& profilePicture);
+	void profilePictureChanged(const QByteArray& profilePicture);
+	void profilePictureChangedByUser(const bb::cascades::Image& profilePicture);
 	void userStatusChanged(bb::platform::bbm::UserStatus::Type userStatus);
 	void statusMessageChanged(const QString& statusMessage);
 	void statusChangedFromBBM(bb::platform::bbm::UserStatus::Type type, const QString& statusMessage);

@@ -83,7 +83,7 @@ bb::cascades::Image Settings::profilePicture()
 void Settings::setProfilePicture(const bb::cascades::Image& profilePicture)
 {
 	m_profilePicture = profilePicture;
-	emit profilePictureChanged(profilePicture);
+	emit profilePictureChangedByUser(m_profilePicture);
 }
 
 /*

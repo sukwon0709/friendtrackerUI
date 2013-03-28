@@ -41,6 +41,7 @@ public:
 signals:
 	void userProfileInitialized();
 	void onlinePpIdsChanged(const QStringList& ppIds);
+	void updateProfilePictureOnMap();
 
 public Q_SLOTS:
 	/**
@@ -56,6 +57,11 @@ public Q_SLOTS:
 	void setOnlinePpIds(const QStringList& ppIds);
 	void pullLocations();
 	void updateFriendsLocation(const QList<User> &);
+	void updateProfilePicture(const QByteArray &);
+
+private:
+	void saveUserProfilePicture();
+	void saveUserProfilePicture(const QByteArray &);
 
 private:
 	bb::cascades::Application* m_app;
@@ -70,6 +76,8 @@ private:
 	QStringList m_onlinePpIds;
 	QTimer* m_regularModeTimer;
 	int m_visibility;
+	int m_numProfilePictureUpdates;
+	QString m_previousProfilePicturePath;
 };
 
 #endif /* FriendtrackerUI_HPP_ */
