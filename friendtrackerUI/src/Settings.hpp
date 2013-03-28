@@ -50,7 +50,7 @@ public:
 
 	Q_INVOKABLE void initUserProfileFromBBM();
 	Q_INVOKABLE void openCamera();
-	Q_INVOKABLE void setUserStatusNoNotify(bb::platform::bbm::UserStatus::Type userStatus);
+	Q_INVOKABLE void setStatus(int userStatus, const QString & statusMessage);
 
 	QString displayName();
 	bb::cascades::Image profilePicture();

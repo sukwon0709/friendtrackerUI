@@ -172,10 +172,8 @@ Sheet {
                                             customStatusMessage.selected = true;
                                         } else {
                                             if (type == 1) {
-                                                console.log("UPDATE TO AVAILABLE");
                                                 availableOption.selected = true;
                                             } else {
-                                                console.log("UPDATE TO BUSY");
                                                 busyOption.selected = true;
                                             }
                                         }
@@ -184,13 +182,15 @@ Sheet {
                                     onSelectedIndexChanged: {
                                         if (initialized == 1) {
                                             if (selectedIndex == 0) {
-                                                console.log("UPDATE2 TO AVAILABLE");
-                                                _settings.userStatus = 1;
+                                                _settings.setStatus(1, "Available");
                                                 ignoreBBMUpdate = 1;
+                                                customMessageBox.visible = false;
                                             } else if (selectedIndex == 1) {
-                                                console.log("UPDATE2 TO BUSY");
-                                                _settings.userStatus = 2;
+                                                _settings.setStatus(2, "Busy");
                                                 ignoreBBMUpdate = 1;
+                                                customMessageBox.visible = false;
+                                            } else {
+                                                customMessageBox.visible = true;
                                             }
                                         }
                                     }
@@ -209,6 +209,11 @@ Sheet {
                                         id: customStatusMessage
                                         text: "Edit Status Message"
                                     }
+                                }
+                                
+                                TextField {
+                                    id: customMessageBox
+                                    visible: false
                                 }
 
                                 Label {

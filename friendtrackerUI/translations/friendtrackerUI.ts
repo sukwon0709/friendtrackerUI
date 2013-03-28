@@ -162,7 +162,7 @@ Pixel: %3, %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/settings.qml" line="303"/>
+        <location filename="../assets/settings.qml" line="308"/>
         <source>Server Settings</source>
         <translation type="unfinished"></translation>
     </message>

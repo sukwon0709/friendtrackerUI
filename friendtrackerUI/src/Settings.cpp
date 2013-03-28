@@ -40,7 +40,6 @@ Settings::Settings(QObject* parent, RegistrationHandler* regHandler)
 , m_userProfile(0)
 , m_cameraInvokeStatus(0)
 , m_filePicker(0)
-, m_userStatus(bbm::UserStatus::Available)
 , m_initialized(false)
 {
 	//qmlRegisterType < Camera > ("bb.cascades.multimedia", 1, 0, "Camera");
@@ -115,10 +114,21 @@ void Settings::setUserStatus(bbm::UserStatus::Type userStatus)
 /*
  * Explicitly used when ...
  */
-void Settings::setUserStatusNoNotify(bbm::UserStatus::Type userStatus)
+void Settings::setStatus(int userStatus, const QString& statusMessage)
 {
-	m_userStatus = userStatus;
-	emit userStatusChanged(userStatus);
+	if (userStatus == 1) {
+		m_userStatus = bbm::UserStatus::Available;
+	} else {
+		m_userStatus = bbm::UserStatus::Busy;
+	}
+	m_statusMessage = statusMessage;
+
+	bool result = m_userProfile->requestUpdateStatus(m_userStatus, "");
+	if (!result) {
+		cout << "STATUS UPDATE FAILED2" << endl;
+	}
+	emit userStatusChanged(m_userStatus);
+	emit statusMessageChanged(m_statusMessage);
 }
 
 QString Settings::statusMessage()
@@ -199,6 +209,7 @@ void Settings::initUserProfileFromBBM()
 
 		m_displayName = m_userProfile->displayName();
 		m_profilePicture = m_userProfile->displayPicture();
+		m_userStatus = m_userProfile->status();
 		m_statusMessage = m_userProfile->statusMessage();
 		m_personalMessage = m_userProfile->personalMessage();
 
