@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'WebMaps.hpp'
 **
-** Created: Mon Mar 25 21:04:23 2013
+** Created: Thu Mar 28 22:54:18 2013
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.4)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -66,11 +66,12 @@ static const uint qt_meta_data_WebMaps[] = {
        0,
 
  // enums: name, flags, count, data
-     369, 0x0,    2,  107,
+     369, 0x0,    3,  107,
 
  // enum data: key, value
-     456, uint(WebMaps::BingMaps),
-     465, uint(WebMaps::OpenLayers),
+     456, uint(WebMaps::GoogleMaps),
+     467, uint(WebMaps::BingMaps),
+     476, uint(WebMaps::OpenLayers),
 
        0        // eod
 };
@@ -88,7 +89,7 @@ static const char qt_meta_stringdata_WebMaps[] = {
     "setGeoLocationInterval(float)\0Provider\0"
     "currentProvider\0QString\0pageContent\0"
     "viewModeTitle\0viewMode\0double\0myLat\0"
-    "myLon\0BingMaps\0OpenLayers\0"
+    "myLon\0GoogleMaps\0BingMaps\0OpenLayers\0"
 };
 
 void WebMaps::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)

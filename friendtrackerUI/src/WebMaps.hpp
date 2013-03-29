@@ -58,6 +58,7 @@ class WebMaps : public QObject
 public:
     // Available map providers
     enum Provider {
+    	GoogleMaps,
         BingMaps,
         OpenLayers
     };

@@ -35,6 +35,40 @@ WebMaps::WebMaps(QObject *parent)
 {
 
 //! [0]
+    {
+        QVariantMap entry;
+        entry["scriptFile"] = QLatin1String("local:///assets/google_map.js");
+        entry["mapUrl"] = QLatin1String("https://maps.googleapis.com/maps/api/js?sensor=true&libraries=places");
+
+        QVariantList viewModes;
+        {
+            QVariantMap viewMode;
+            viewMode["title"] = tr("Hybrid");
+            viewMode["mapType"] = QLatin1String("google.maps.MapTypeId.HYBRID");
+            viewModes << viewMode;
+        }
+        {
+            QVariantMap viewMode;
+            viewMode["title"] = tr("Road");
+            viewMode["mapType"] = QLatin1String("google.maps.MapTypeId.ROADMAP");
+            viewModes << viewMode;
+        }
+        {
+            QVariantMap viewMode;
+            viewMode["title"] = tr("Satellite");
+            viewMode["mapType"] = QLatin1String("google.maps.MapTypeId.SATELLITE");
+            viewModes << viewMode;
+        }
+        {
+            QVariantMap viewMode;
+            viewMode["title"] = tr("Terrain");
+            viewMode["mapType"] = QLatin1String("google.maps.MapTypeId.TERRAIN");
+            viewModes << viewMode;
+        }
+        entry["viewModes"] = viewModes;
+
+        m_providerData.insert(GoogleMaps, entry);
+    }
 
     // Bing Maps
     {
@@ -195,7 +229,7 @@ QString WebMaps::pageContent() const
 
 	m_ProgressDialog->setState(SystemUiProgressState::Active);
 	m_ProgressDialog->setEmoticonsEnabled(true);
-	m_ProgressDialog->setTitle(tr("Initializing Bing Maps..."));
+	m_ProgressDialog->setTitle(tr("Initializing Google Maps..."));
 	m_ProgressDialog->cancelButton()->setLabel(tr("Cancel"));
 	m_ProgressDialog->confirmButton()->setLabel(QString::null);
 

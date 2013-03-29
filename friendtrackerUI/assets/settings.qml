@@ -233,7 +233,7 @@ Sheet {
                                     onClicked: {
                                         _settings.personalMessage = personalMessage.text;
                                     }
-                                }
+                                }                                
                                 // placeholder so that keyboard won't hide PersonalMessage textarea
                                 Label {
                                     text: ""
@@ -328,6 +328,28 @@ Sheet {
                             }
                         }
                     }
+                    
+                    actions: [
+                        ActionItem {
+                            title: "Default"
+                            ActionBar.placement: ActionBarPlacement.OnBar
+                            onTriggered: {
+                                // reset visibility
+                                visibility.checked = true;
+                                _friendtracker.saveValueFor(visibility.objectName, visibility.checked);
+                                // reset real-time mode
+                                mode.checked = true;
+                                _friendtracker.saveValueFor(mode.objectName, mode.checked);
+                                // reset pull frequency
+                                pullFrequency.value = 5;
+                                _friendtracker.saveValueFor(pullFrequency.objectName, pullFrequency.value);
+                                // reset update frequency
+                                updateFrequency.value = 5;
+                                _friendtracker.saveValueFor(updateFrequency.objectName, updateFrequency.value);
+                            }
+                        }
+                    ] // actions
+                    
                     Container {
                         //background: Color.Black
                         layout: StackLayout {}
@@ -476,7 +498,7 @@ Sheet {
                                     // change update location interval
                                     _mapView.setGeoLocationInterval(updateFrequency.value);
                                 }
-                            }
+                            }                                                    
                         }
                     }
                 }
