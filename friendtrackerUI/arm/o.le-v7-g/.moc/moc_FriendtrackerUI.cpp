@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'FriendtrackerUI.hpp'
 **
-** Created: Sat Mar 30 02:07:37 2013
+** Created: Sat Mar 30 14:10:24 2013
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.4)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,8 +23,8 @@ static const uint qt_meta_data_FriendtrackerUI[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      25,   14, // methods
-       1,  139, // properties
+      26,   14, // methods
+       2,  144, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
@@ -50,22 +50,25 @@ static const uint qt_meta_data_FriendtrackerUI[] = {
      403,  395,   16,   16, 0x0a,
      438,   16,   16,   16, 0x0a,
      474,  471,   16,   16, 0x0a,
+     586,   16,  556,   16, 0x0a,
 
  // methods: signature, parameters, type, tag, flags
-     566,  556,   16,   16, 0x02,
-     589,   16,   16,   16, 0x02,
-     607,   16,   16,   16, 0x02,
-     637,  635,  627,   16, 0x02,
-     666,  635,   16,   16, 0x02,
-     716,  696,   16,   16, 0x02,
-     771,   16,  751,   16, 0x02,
-     791,   16,   16,   16, 0x02,
+     614,  604,   16,   16, 0x02,
+     637,   16,   16,   16, 0x02,
+     655,   16,   16,   16, 0x02,
+     685,  683,  675,   16, 0x02,
+     714,  683,   16,   16, 0x02,
+     764,  744,   16,   16, 0x02,
+     819,   16,  799,   16, 0x02,
+     839,   16,   16,   16, 0x02,
 
  // properties: name, type, flags
-     824,  325, 0x0b495103,
+     872,  325, 0x0b495103,
+     884,  556, 0x00095009,
 
  // properties: notify_signal_id
        1,
+       0,
 
        0        // eod
 };
@@ -86,15 +89,17 @@ static const char qt_meta_stringdata_FriendtrackerUI[] = {
     "updateProfilePicture(QByteArray)\0,,\0"
     "returnFriendDisplayPicture(QString,bb::platform::bbm::ImageType::Type,"
     "QByteArray)\0"
-    "frequency\0setRegularMode(double)\0"
-    "setRealtimeMode()\0setVisibility(bool)\0"
-    "QString\0,\0getValueFor(QString,QString)\0"
+    "bb::cascades::GroupDataModel*\0"
+    "friendListModel()\0frequency\0"
+    "setRegularMode(double)\0setRealtimeMode()\0"
+    "setVisibility(bool)\0QString\0,\0"
+    "getValueFor(QString,QString)\0"
     "saveValueFor(QString,QString)\0"
     "containerObject,x,y\0"
     "getAddress(QObject*,double,double)\0"
     "bb::cascades::Image\0getProfilePicture()\0"
     "askFriendProfilePicture(QString)\0"
-    "onlinePpIds\0"
+    "onlinePpIds\0friendListModel\0"
 };
 
 void FriendtrackerUI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -121,16 +126,18 @@ void FriendtrackerUI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         case 14: _t->updateFriendsLocation((*reinterpret_cast< const QList<User>(*)>(_a[1]))); break;
         case 15: _t->updateProfilePicture((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
         case 16: _t->returnFriendDisplayPicture((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const bb::platform::bbm::ImageType::Type(*)>(_a[2])),(*reinterpret_cast< const QByteArray(*)>(_a[3]))); break;
-        case 17: _t->setRegularMode((*reinterpret_cast< double(*)>(_a[1]))); break;
-        case 18: _t->setRealtimeMode(); break;
-        case 19: _t->setVisibility((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 20: { QString _r = _t->getValueFor((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2])));
+        case 17: { bb::cascades::GroupDataModel* _r = _t->friendListModel();
+            if (_a[0]) *reinterpret_cast< bb::cascades::GroupDataModel**>(_a[0]) = _r; }  break;
+        case 18: _t->setRegularMode((*reinterpret_cast< double(*)>(_a[1]))); break;
+        case 19: _t->setRealtimeMode(); break;
+        case 20: _t->setVisibility((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 21: { QString _r = _t->getValueFor((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 21: _t->saveValueFor((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
-        case 22: _t->getAddress((*reinterpret_cast< QObject*(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2])),(*reinterpret_cast< double(*)>(_a[3]))); break;
-        case 23: { bb::cascades::Image _r = _t->getProfilePicture();
+        case 22: _t->saveValueFor((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
+        case 23: _t->getAddress((*reinterpret_cast< QObject*(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2])),(*reinterpret_cast< double(*)>(_a[3]))); break;
+        case 24: { bb::cascades::Image _r = _t->getProfilePicture();
             if (_a[0]) *reinterpret_cast< bb::cascades::Image*>(_a[0]) = _r; }  break;
-        case 24: _t->askFriendProfilePicture((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 25: _t->askFriendProfilePicture((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -168,35 +175,36 @@ int FriendtrackerUI::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 25)
+        if (_id < 26)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 25;
+        _id -= 26;
     }
 #ifndef QT_NO_PROPERTIES
       else if (_c == QMetaObject::ReadProperty) {
         void *_v = _a[0];
         switch (_id) {
         case 0: *reinterpret_cast< QStringList*>(_v) = onlinePpIds(); break;
+        case 1: *reinterpret_cast< bb::cascades::GroupDataModel**>(_v) = friendListModel(); break;
         }
-        _id -= 1;
+        _id -= 2;
     } else if (_c == QMetaObject::WriteProperty) {
         void *_v = _a[0];
         switch (_id) {
         case 0: setOnlinePpIds(*reinterpret_cast< QStringList*>(_v)); break;
         }
-        _id -= 1;
+        _id -= 2;
     } else if (_c == QMetaObject::ResetProperty) {
-        _id -= 1;
+        _id -= 2;
     } else if (_c == QMetaObject::QueryPropertyDesignable) {
-        _id -= 1;
+        _id -= 2;
     } else if (_c == QMetaObject::QueryPropertyScriptable) {
-        _id -= 1;
+        _id -= 2;
     } else if (_c == QMetaObject::QueryPropertyStored) {
-        _id -= 1;
+        _id -= 2;
     } else if (_c == QMetaObject::QueryPropertyEditable) {
-        _id -= 1;
+        _id -= 2;
     } else if (_c == QMetaObject::QueryPropertyUser) {
-        _id -= 1;
+        _id -= 2;
     }
 #endif // QT_NO_PROPERTIES
     return _id;
