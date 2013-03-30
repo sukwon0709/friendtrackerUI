@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'ServerInterface.h'
 **
-** Created: Thu Mar 28 22:17:46 2013
+** Created: Fri Mar 29 20:27:28 2013
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.4)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,21 +23,22 @@ static const uint qt_meta_data_ServerInterface[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       5,   14, // methods
+       6,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       4,       // signalCount
+       5,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
       28,   17,   16,   16, 0x05,
       57,   16,   16,   16, 0x05,
       90,   16,   16,   16, 0x05,
      118,   16,   16,   16, 0x05,
+     133,   16,   16,   16, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-     132,   16,   16,   16, 0x0a,
+     147,   16,   16,   16, 0x0a,
 
        0        // eod
 };
@@ -46,8 +47,8 @@ static const char qt_meta_stringdata_ServerInterface[] = {
     "ServerInterface\0\0sessionKey\0"
     "onSessionKeyChanged(QString)\0"
     "onFriendListChanged(QStringList)\0"
-    "onGetLocations(QList<User>)\0loginFailed()\0"
-    "parseReply(QNetworkReply*)\0"
+    "onGetLocations(QList<User>)\0loginSuccess()\0"
+    "loginFailed()\0parseReply(QNetworkReply*)\0"
 };
 
 void ServerInterface::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -59,8 +60,9 @@ void ServerInterface::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         case 0: _t->onSessionKeyChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 1: _t->onFriendListChanged((*reinterpret_cast< const QStringList(*)>(_a[1]))); break;
         case 2: _t->onGetLocations((*reinterpret_cast< const QList<User>(*)>(_a[1]))); break;
-        case 3: _t->loginFailed(); break;
-        case 4: _t->parseReply((*reinterpret_cast< QNetworkReply*(*)>(_a[1]))); break;
+        case 3: _t->loginSuccess(); break;
+        case 4: _t->loginFailed(); break;
+        case 5: _t->parseReply((*reinterpret_cast< QNetworkReply*(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -98,9 +100,9 @@ int ServerInterface::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 5)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 5;
+        _id -= 6;
     }
     return _id;
 }
@@ -127,8 +129,14 @@ void ServerInterface::onGetLocations(const QList<User> & _t1)
 }
 
 // SIGNAL 3
-void ServerInterface::loginFailed()
+void ServerInterface::loginSuccess()
 {
     QMetaObject::activate(this, &staticMetaObject, 3, 0);
+}
+
+// SIGNAL 4
+void ServerInterface::loginFailed()
+{
+    QMetaObject::activate(this, &staticMetaObject, 4, 0);
 }
 QT_END_MOC_NAMESPACE

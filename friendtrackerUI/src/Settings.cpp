@@ -24,6 +24,8 @@
 
 #include <bps/soundplayer.h>
 
+#include "Utility.h"
+
 #include <iostream>
 
 using namespace std;
@@ -141,7 +143,6 @@ QString Settings::statusMessage()
  */
 void Settings::setStatusMessage(const QString& statusMessage)
 {
-	cout << "STATUS CHANGED " << statusMessage.toStdString() << endl;
 	bool result = m_userProfile->requestUpdateStatus(m_userStatus, statusMessage);
 
 	if (!result) {
@@ -160,7 +161,6 @@ void Settings::setStatusFromBBM(bbm::UserStatus::Type statusType, const QString&
 	Q_UNUSED(statusType);
 	m_userStatus = statusType;
 	m_statusMessage = statusMessage;
-	cout << "STATUS FROM BBM: " << statusType << " " << statusMessage.toStdString() << endl;
 	emit statusChangedFromBBM(statusType, statusMessage);
 }
 
@@ -279,10 +279,6 @@ void Settings::onCameraInvokeResult()
  */
 void Settings::cameraCardDone(const bb::system::CardDoneMessage& message)
 {
-	cout << "REASON: " << message.reason().toStdString() << endl;
-	cout << "MESSAGE: " << message.data().toStdString() << endl;
-	cout << "Type: " << message.dataType().toStdString() << endl;
-
 	// FIXME: this is an ugly hack. dataType is "" for FilePicker
 	// so I am checking that value to determine if I should create FilePicker
 	if (message.reason() == "save" && message.dataType() != "") {
@@ -329,15 +325,7 @@ void Settings::updateProfilePicture(const QStringList& images)
 			imageType = bb::platform::bbm::ImageType::Bmp;
 		}
 
-		QImage scaledImage;
-		scaledImage.loadFromData(imageInByteArray);
-		scaledImage = scaledImage.scaled(400, 400, Qt::KeepAspectRatio);	// Scaled Image must be less than 32KB
-
-		const QImage swappedImage = scaledImage.rgbSwapped();
-		bb::ImageData imageData = bb::ImageData::fromPixels(swappedImage.bits(),
-				bb::PixelFormat::RGBX, swappedImage.width(), swappedImage.height(), swappedImage.bytesPerLine());
-
-		QByteArray scaledImageInByteArray = bb::utility::ImageConverter::encode(imageFormat, imageData);
+		QByteArray scaledImageInByteArray = Utility::scaleImage(imageInByteArray, 400, 400);
 
 		bool result = m_userProfile->requestUpdateDisplayPicture(imageType, scaledImageInByteArray);
 		if (!result) {
@@ -346,7 +334,7 @@ void Settings::updateProfilePicture(const QStringList& images)
 			toast.exec();
 			return;
 		} else {
-			setProfilePicture(Image(imageData));
+			setProfilePicture(Image(scaledImageInByteArray));
 			SystemToast toast;
 			toast.setBody("Profile Picture Updated Successfully.");
 			toast.exec();

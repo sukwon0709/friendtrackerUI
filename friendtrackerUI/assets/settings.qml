@@ -1,6 +1,22 @@
 import bb.cascades 1.0
 import bb.cascades.pickers 1.0
 
+/**
+ * Settings Page
+ * 
+ * This page uses a sheet to get around a problem with embedding a tabbedPane in side navigationPane.
+ * 
+ * Operations Supported
+ * - change display picture
+ * - change status
+ * - change personal message
+ * - change visibility
+ * - change operation mode
+ * - change pull location frequency
+ * - change location update frequency
+ * 
+ * by Sukwon Oh
+ */
 Sheet {
     id: settingsSheet    
     content: TabbedPane {
@@ -390,7 +406,7 @@ Sheet {
                                 id: mode
                                 objectName: "mode"
                                 checked: _friendtracker.getValueFor(mode.objectName, "true")
-                                horizontalAlignment: HorizontalAlignment.Right
+                                horizontalAlignment: HorizontalAlignment.Right                            
                                 
                                 onCheckedChanged: {
                                     if (!checked) {

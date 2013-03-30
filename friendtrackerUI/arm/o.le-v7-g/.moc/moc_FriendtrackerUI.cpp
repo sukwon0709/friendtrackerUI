@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'FriendtrackerUI.hpp'
 **
-** Created: Thu Mar 28 22:54:12 2013
+** Created: Sat Mar 30 02:07:37 2013
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.4)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,40 +23,46 @@ static const uint qt_meta_data_FriendtrackerUI[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      19,   14, // methods
-       1,  109, // properties
+      25,   14, // methods
+       1,  139, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       3,       // signalCount
+       4,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
       17,   16,   16,   16, 0x05,
       48,   42,   16,   16, 0x05,
       80,   16,   16,   16, 0x05,
+     133,  127,   16,   16, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-     108,   16,   16,   16, 0x0a,
-     122,   16,   16,   16, 0x0a,
-     140,   16,   16,   16, 0x0a,
-     162,   16,   16,   16, 0x0a,
-     193,   16,   16,   16, 0x0a,
-     216,   16,   16,   16, 0x0a,
-     245,   16,  233,   16, 0x0a,
-     259,   42,   16,   16, 0x0a,
-     287,   16,   16,   16, 0x0a,
-     303,   16,   16,   16, 0x0a,
-     338,   16,   16,   16, 0x0a,
+     194,   16,   16,   16, 0x0a,
+     204,   16,   16,   16, 0x0a,
+     214,   16,   16,   16, 0x0a,
+     232,   16,   16,   16, 0x0a,
+     254,   16,   16,   16, 0x0a,
+     285,   16,   16,   16, 0x0a,
+     308,   16,   16,   16, 0x0a,
+     337,   16,  325,   16, 0x0a,
+     351,   42,   16,   16, 0x0a,
+     379,   16,   16,   16, 0x0a,
+     403,  395,   16,   16, 0x0a,
+     438,   16,   16,   16, 0x0a,
+     474,  471,   16,   16, 0x0a,
 
  // methods: signature, parameters, type, tag, flags
-     381,  371,   16,   16, 0x02,
-     404,   16,   16,   16, 0x02,
-     422,   16,   16,   16, 0x02,
-     452,  450,  442,   16, 0x02,
-     481,  450,   16,   16, 0x02,
+     566,  556,   16,   16, 0x02,
+     589,   16,   16,   16, 0x02,
+     607,   16,   16,   16, 0x02,
+     637,  635,  627,   16, 0x02,
+     666,  635,   16,   16, 0x02,
+     716,  696,   16,   16, 0x02,
+     771,   16,  751,   16, 0x02,
+     791,   16,   16,   16, 0x02,
 
  // properties: name, type, flags
-     511,  233, 0x0b495103,
+     824,  325, 0x0b495103,
 
  // properties: notify_signal_id
        1,
@@ -67,18 +73,28 @@ static const uint qt_meta_data_FriendtrackerUI[] = {
 static const char qt_meta_stringdata_FriendtrackerUI[] = {
     "FriendtrackerUI\0\0userProfileInitialized()\0"
     "ppIds\0onlinePpIdsChanged(QStringList)\0"
-    "updateProfilePictureOnMap()\0initWebMaps()\0"
-    "initUserProfile()\0login(QGeoCoordinate)\0"
+    "updateProfilePictureOnMap(bb::cascades::Image)\0"
+    "ppId,\0"
+    "updateFriendProfilePictureOnMap(QString,bb::cascades::Image)\0"
+    "initMap()\0loadMap()\0initUserProfile()\0"
+    "login(QGeoCoordinate)\0"
     "updateLocation(QGeoCoordinate)\0"
     "setSessionKey(QString)\0endApplication()\0"
     "QStringList\0onlinePpIds()\0"
     "setOnlinePpIds(QStringList)\0pullLocations()\0"
-    "updateFriendsLocation(QList<User>)\0"
-    "updateProfilePicture(QByteArray)\0"
+    "friends\0updateFriendsLocation(QList<User>)\0"
+    "updateProfilePicture(QByteArray)\0,,\0"
+    "returnFriendDisplayPicture(QString,bb::platform::bbm::ImageType::Type,"
+    "QByteArray)\0"
     "frequency\0setRegularMode(double)\0"
     "setRealtimeMode()\0setVisibility(bool)\0"
     "QString\0,\0getValueFor(QString,QString)\0"
-    "saveValueFor(QString,QString)\0onlinePpIds\0"
+    "saveValueFor(QString,QString)\0"
+    "containerObject,x,y\0"
+    "getAddress(QObject*,double,double)\0"
+    "bb::cascades::Image\0getProfilePicture()\0"
+    "askFriendProfilePicture(QString)\0"
+    "onlinePpIds\0"
 };
 
 void FriendtrackerUI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -89,25 +105,32 @@ void FriendtrackerUI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         switch (_id) {
         case 0: _t->userProfileInitialized(); break;
         case 1: _t->onlinePpIdsChanged((*reinterpret_cast< const QStringList(*)>(_a[1]))); break;
-        case 2: _t->updateProfilePictureOnMap(); break;
-        case 3: _t->initWebMaps(); break;
-        case 4: _t->initUserProfile(); break;
-        case 5: _t->login((*reinterpret_cast< const QGeoCoordinate(*)>(_a[1]))); break;
-        case 6: _t->updateLocation((*reinterpret_cast< const QGeoCoordinate(*)>(_a[1]))); break;
-        case 7: _t->setSessionKey((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 8: _t->endApplication(); break;
-        case 9: { QStringList _r = _t->onlinePpIds();
+        case 2: _t->updateProfilePictureOnMap((*reinterpret_cast< const bb::cascades::Image(*)>(_a[1]))); break;
+        case 3: _t->updateFriendProfilePictureOnMap((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const bb::cascades::Image(*)>(_a[2]))); break;
+        case 4: _t->initMap(); break;
+        case 5: _t->loadMap(); break;
+        case 6: _t->initUserProfile(); break;
+        case 7: _t->login((*reinterpret_cast< const QGeoCoordinate(*)>(_a[1]))); break;
+        case 8: _t->updateLocation((*reinterpret_cast< const QGeoCoordinate(*)>(_a[1]))); break;
+        case 9: _t->setSessionKey((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 10: _t->endApplication(); break;
+        case 11: { QStringList _r = _t->onlinePpIds();
             if (_a[0]) *reinterpret_cast< QStringList*>(_a[0]) = _r; }  break;
-        case 10: _t->setOnlinePpIds((*reinterpret_cast< const QStringList(*)>(_a[1]))); break;
-        case 11: _t->pullLocations(); break;
-        case 12: _t->updateFriendsLocation((*reinterpret_cast< const QList<User>(*)>(_a[1]))); break;
-        case 13: _t->updateProfilePicture((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
-        case 14: _t->setRegularMode((*reinterpret_cast< double(*)>(_a[1]))); break;
-        case 15: _t->setRealtimeMode(); break;
-        case 16: _t->setVisibility((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 17: { QString _r = _t->getValueFor((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2])));
+        case 12: _t->setOnlinePpIds((*reinterpret_cast< const QStringList(*)>(_a[1]))); break;
+        case 13: _t->pullLocations(); break;
+        case 14: _t->updateFriendsLocation((*reinterpret_cast< const QList<User>(*)>(_a[1]))); break;
+        case 15: _t->updateProfilePicture((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
+        case 16: _t->returnFriendDisplayPicture((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const bb::platform::bbm::ImageType::Type(*)>(_a[2])),(*reinterpret_cast< const QByteArray(*)>(_a[3]))); break;
+        case 17: _t->setRegularMode((*reinterpret_cast< double(*)>(_a[1]))); break;
+        case 18: _t->setRealtimeMode(); break;
+        case 19: _t->setVisibility((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 20: { QString _r = _t->getValueFor((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 18: _t->saveValueFor((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
+        case 21: _t->saveValueFor((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
+        case 22: _t->getAddress((*reinterpret_cast< QObject*(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2])),(*reinterpret_cast< double(*)>(_a[3]))); break;
+        case 23: { bb::cascades::Image _r = _t->getProfilePicture();
+            if (_a[0]) *reinterpret_cast< bb::cascades::Image*>(_a[0]) = _r; }  break;
+        case 24: _t->askFriendProfilePicture((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -145,9 +168,9 @@ int FriendtrackerUI::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 19)
+        if (_id < 25)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 19;
+        _id -= 25;
     }
 #ifndef QT_NO_PROPERTIES
       else if (_c == QMetaObject::ReadProperty) {
@@ -193,8 +216,16 @@ void FriendtrackerUI::onlinePpIdsChanged(const QStringList & _t1)
 }
 
 // SIGNAL 2
-void FriendtrackerUI::updateProfilePictureOnMap()
+void FriendtrackerUI::updateProfilePictureOnMap(const bb::cascades::Image & _t1)
 {
-    QMetaObject::activate(this, &staticMetaObject, 2, 0);
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 2, _a);
+}
+
+// SIGNAL 3
+void FriendtrackerUI::updateFriendProfilePictureOnMap(const QString & _t1, const bb::cascades::Image & _t2)
+{
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    QMetaObject::activate(this, &staticMetaObject, 3, _a);
 }
 QT_END_MOC_NAMESPACE

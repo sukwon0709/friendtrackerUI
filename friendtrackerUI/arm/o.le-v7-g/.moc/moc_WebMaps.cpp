@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'WebMaps.hpp'
 **
-** Created: Thu Mar 28 22:54:18 2013
+** Created: Sat Mar 30 01:50:37 2013
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.4)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,73 +23,65 @@ static const uint qt_meta_data_WebMaps[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      13,   14, // methods
-       6,   79, // properties
-       1,  103, // enums/sets
+      17,   14, // methods
+       2,   99, // properties
+       0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       7,       // signalCount
+       8,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
-       9,    8,    8,    8, 0x05,
-      34,    8,    8,    8, 0x05,
-      58,   52,    8,    8, 0x05,
-      88,   52,    8,    8, 0x05,
-     122,    8,    8,    8, 0x05,
-     134,    8,    8,    8, 0x05,
-     168,  148,    8,    8, 0x05,
+      11,    9,    8,    8, 0x05,
+      34,   32,    8,    8, 0x05,
+      55,    8,    8,    8, 0x05,
+      88,   82,    8,    8, 0x05,
+     118,   82,    8,    8, 0x05,
+     152,    8,    8,    8, 0x05,
+     164,    8,    8,    8, 0x05,
+     198,  178,    8,    8, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-     217,    8,    8,    8, 0x0a,
-     232,    8,    8,    8, 0x0a,
-     261,  256,    8,    8, 0x0a,
-     302,    8,    8,    8, 0x0a,
-     316,    8,    8,    8, 0x0a,
+     247,    8,    8,    8, 0x0a,
+     276,  271,    8,    8, 0x0a,
+     317,    8,    8,    8, 0x0a,
+     331,    8,    8,    8, 0x0a,
 
  // methods: signature, parameters, type, tag, flags
-     339,  333,    8,    8, 0x02,
+     354,  348,    8,    8, 0x02,
+     415,  397,  384,    8, 0x02,
+     487,  461,    8,    8, 0x02,
+     532,  520,    8,    8, 0x02,
+     571,  566,  557,    8, 0x02,
 
  // properties: name, type, flags
-     378,  369, 0x0049510b,
-     402,  394, 0x0a495001,
-     414,  394, 0x0a495001,
-     428,  394, 0x0a495001,
-     444,  437, 0x06095001,
-     450,  437, 0x06095001,
+     594,  587, 0x06495001,
+     600,  587, 0x06495001,
 
  // properties: notify_signal_id
        0,
-       0,
        1,
-       1,
-       0,
-       0,
-
- // enums: name, flags, count, data
-     369, 0x0,    3,  107,
-
- // enum data: key, value
-     456, uint(WebMaps::GoogleMaps),
-     467, uint(WebMaps::BingMaps),
-     476, uint(WebMaps::OpenLayers),
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_WebMaps[] = {
-    "WebMaps\0\0currentProviderChanged()\0"
-    "viewModeChanged()\0coord\0"
-    "gotMyLocation(QGeoCoordinate)\0"
+    "WebMaps\0\0x\0myLatChanged(double)\0y\0"
+    "myLonChanged(double)\0getCurrentLocationFailed()\0"
+    "coord\0gotMyLocation(QGeoCoordinate)\0"
     "myLocationChanged(QGeoCoordinate)\0"
     "subscribe()\0unsubscribe()\0ppId,x,y,visibility\0"
     "friendLocationChanged(QString,double,double,int)\0"
-    "nextViewMode()\0positionUpdateTimeout()\0"
-    "info\0positionUpdatedHandler(QGeoPositionInfo)\0"
+    "positionUpdateTimeout()\0info\0"
+    "positionUpdatedHandler(QGeoPositionInfo)\0"
     "showFriends()\0onInvokeResult()\0value\0"
-    "setGeoLocationInterval(float)\0Provider\0"
-    "currentProvider\0QString\0pageContent\0"
-    "viewModeTitle\0viewMode\0double\0myLat\0"
-    "myLon\0GoogleMaps\0BingMaps\0OpenLayers\0"
+    "setGeoLocationInterval(float)\0"
+    "QVariantList\0mapObject,lat,lon\0"
+    "worldToPixelInvokable(QObject*,double,double)\0"
+    "mapObject,containerObject\0"
+    "updateMarkers(QObject*,QObject*)\0"
+    "ppId,object\0addPin(QString,QObject*)\0"
+    "QObject*\0ppId\0getPin(QString)\0double\0"
+    "myLat\0myLon\0"
 };
 
 void WebMaps::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -98,19 +90,25 @@ void WebMaps::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         Q_ASSERT(staticMetaObject.cast(_o));
         WebMaps *_t = static_cast<WebMaps *>(_o);
         switch (_id) {
-        case 0: _t->currentProviderChanged(); break;
-        case 1: _t->viewModeChanged(); break;
-        case 2: _t->gotMyLocation((*reinterpret_cast< const QGeoCoordinate(*)>(_a[1]))); break;
-        case 3: _t->myLocationChanged((*reinterpret_cast< const QGeoCoordinate(*)>(_a[1]))); break;
-        case 4: _t->subscribe(); break;
-        case 5: _t->unsubscribe(); break;
-        case 6: _t->friendLocationChanged((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2])),(*reinterpret_cast< double(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4]))); break;
-        case 7: _t->nextViewMode(); break;
+        case 0: _t->myLatChanged((*reinterpret_cast< double(*)>(_a[1]))); break;
+        case 1: _t->myLonChanged((*reinterpret_cast< double(*)>(_a[1]))); break;
+        case 2: _t->getCurrentLocationFailed(); break;
+        case 3: _t->gotMyLocation((*reinterpret_cast< const QGeoCoordinate(*)>(_a[1]))); break;
+        case 4: _t->myLocationChanged((*reinterpret_cast< const QGeoCoordinate(*)>(_a[1]))); break;
+        case 5: _t->subscribe(); break;
+        case 6: _t->unsubscribe(); break;
+        case 7: _t->friendLocationChanged((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2])),(*reinterpret_cast< double(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4]))); break;
         case 8: _t->positionUpdateTimeout(); break;
         case 9: _t->positionUpdatedHandler((*reinterpret_cast< const QGeoPositionInfo(*)>(_a[1]))); break;
         case 10: _t->showFriends(); break;
         case 11: _t->onInvokeResult(); break;
         case 12: _t->setGeoLocationInterval((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 13: { QVariantList _r = _t->worldToPixelInvokable((*reinterpret_cast< QObject*(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2])),(*reinterpret_cast< double(*)>(_a[3])));
+            if (_a[0]) *reinterpret_cast< QVariantList*>(_a[0]) = _r; }  break;
+        case 14: _t->updateMarkers((*reinterpret_cast< QObject*(*)>(_a[1])),(*reinterpret_cast< QObject*(*)>(_a[2]))); break;
+        case 15: _t->addPin((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< QObject*(*)>(_a[2]))); break;
+        case 16: { QObject* _r = _t->getPin((*reinterpret_cast< const QString(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QObject**>(_a[0]) = _r; }  break;
         default: ;
         }
     }
@@ -148,87 +146,87 @@ int WebMaps::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 13)
+        if (_id < 17)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 13;
+        _id -= 17;
     }
 #ifndef QT_NO_PROPERTIES
       else if (_c == QMetaObject::ReadProperty) {
         void *_v = _a[0];
         switch (_id) {
-        case 0: *reinterpret_cast< Provider*>(_v) = currentProvider(); break;
-        case 1: *reinterpret_cast< QString*>(_v) = pageContent(); break;
-        case 2: *reinterpret_cast< QString*>(_v) = viewModeTitle(); break;
-        case 3: *reinterpret_cast< QString*>(_v) = viewMode(); break;
-        case 4: *reinterpret_cast< double*>(_v) = getMyLatitude(); break;
-        case 5: *reinterpret_cast< double*>(_v) = getMyLongitude(); break;
+        case 0: *reinterpret_cast< double*>(_v) = getMyLatitude(); break;
+        case 1: *reinterpret_cast< double*>(_v) = getMyLongitude(); break;
         }
-        _id -= 6;
+        _id -= 2;
     } else if (_c == QMetaObject::WriteProperty) {
-        void *_v = _a[0];
-        switch (_id) {
-        case 0: setCurrentProvider(*reinterpret_cast< Provider*>(_v)); break;
-        }
-        _id -= 6;
+        _id -= 2;
     } else if (_c == QMetaObject::ResetProperty) {
-        _id -= 6;
+        _id -= 2;
     } else if (_c == QMetaObject::QueryPropertyDesignable) {
-        _id -= 6;
+        _id -= 2;
     } else if (_c == QMetaObject::QueryPropertyScriptable) {
-        _id -= 6;
+        _id -= 2;
     } else if (_c == QMetaObject::QueryPropertyStored) {
-        _id -= 6;
+        _id -= 2;
     } else if (_c == QMetaObject::QueryPropertyEditable) {
-        _id -= 6;
+        _id -= 2;
     } else if (_c == QMetaObject::QueryPropertyUser) {
-        _id -= 6;
+        _id -= 2;
     }
 #endif // QT_NO_PROPERTIES
     return _id;
 }
 
 // SIGNAL 0
-void WebMaps::currentProviderChanged()
+void WebMaps::myLatChanged(double _t1)
 {
-    QMetaObject::activate(this, &staticMetaObject, 0, 0);
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
-void WebMaps::viewModeChanged()
+void WebMaps::myLonChanged(double _t1)
 {
-    QMetaObject::activate(this, &staticMetaObject, 1, 0);
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 
 // SIGNAL 2
-void WebMaps::gotMyLocation(const QGeoCoordinate & _t1)
+void WebMaps::getCurrentLocationFailed()
 {
-    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
-    QMetaObject::activate(this, &staticMetaObject, 2, _a);
+    QMetaObject::activate(this, &staticMetaObject, 2, 0);
 }
 
 // SIGNAL 3
-void WebMaps::myLocationChanged(const QGeoCoordinate & _t1)
+void WebMaps::gotMyLocation(const QGeoCoordinate & _t1)
 {
     void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 3, _a);
 }
 
 // SIGNAL 4
-void WebMaps::subscribe()
+void WebMaps::myLocationChanged(const QGeoCoordinate & _t1)
 {
-    QMetaObject::activate(this, &staticMetaObject, 4, 0);
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 4, _a);
 }
 
 // SIGNAL 5
-void WebMaps::unsubscribe()
+void WebMaps::subscribe()
 {
     QMetaObject::activate(this, &staticMetaObject, 5, 0);
 }
 
 // SIGNAL 6
+void WebMaps::unsubscribe()
+{
+    QMetaObject::activate(this, &staticMetaObject, 6, 0);
+}
+
+// SIGNAL 7
 void WebMaps::friendLocationChanged(const QString & _t1, double _t2, double _t3, int _t4)
 {
     void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)) };
-    QMetaObject::activate(this, &staticMetaObject, 6, _a);
+    QMetaObject::activate(this, &staticMetaObject, 7, _a);
 }
 QT_END_MOC_NAMESPACE
