@@ -2,7 +2,7 @@
  * LoginReply.cpp
  *
  *  Created on: 2013-03-16
- *      Author: soh
+ *      Author: Sukwon Oh
  */
 
 #include <bb/data/JsonDataAccess>
@@ -23,9 +23,9 @@ bool LoginReply::parse(const QByteArray& data)
 	JsonDataAccess jsonObject;
 	QVariant node = jsonObject.loadFromBuffer(data);
 	if (jsonObject.hasError()) {
-		cout << "error converting JSON data: " << jsonObject.error().errorMessage().toStdString() << endl;
+		qWarning() << "error converting JSON data: " << jsonObject.error().errorMessage();
 	} else {
-		cout << "before parse: " << QString(data).toStdString() << endl;
+		qDebug() << "before parse: " << QString(data);
 		QVariantMap map = node.value<QVariantMap>();
 		if (map["status"].toString() == "OK") {
 			m_status = true;
@@ -33,6 +33,10 @@ bool LoginReply::parse(const QByteArray& data)
 			QVariantList friendList = map["friends"].value<QVariantList>();
 			for (int i = 0; i < friendList.size(); i++) {
 				m_ppIds.append(friendList[i].toString());
+			}
+			QVariantList pinList = map["pins"].value<QVariantList>();
+			for (int i = 0; i < pinList.size(); i++) {
+				m_pins.append(pinList[i].toString());
 			}
 
 			return true;
@@ -56,4 +60,9 @@ QString LoginReply::getSessionKey() const
 QStringList LoginReply::getFriends() const
 {
 	return m_ppIds;
+}
+
+QStringList LoginReply::getPins() const
+{
+	return m_pins;
 }

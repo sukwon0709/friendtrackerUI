@@ -5,6 +5,7 @@
  * Written By: Sukwon Oh, Bill Chen
  */
 #include "WebMaps.hpp"
+#include "FriendtrackerUI.hpp"
 
 #include <QDebug>
 #include <QFile>
@@ -16,6 +17,7 @@
 #include <bb/system/InvokeTarget>
 #include <bb/system/InvokeTargetReply>
 #include <bb/system/SystemToast>
+#include <bb/system/CardDoneMessage>
 
 #include <bb/cascades/Container>
 #include <bb/cascades/maps/MapView>
@@ -26,6 +28,7 @@
 #include <sstream>
 
 #include "Exceptions.h"
+#include "Utility.h"
 
 using namespace bb::cascades;
 using namespace bb::cascades::maps;
@@ -38,15 +41,8 @@ using namespace std;
 WebMaps::WebMaps(QObject *parent)
     : QObject(parent)
 	, m_positionInfoSource(QGeoPositionInfoSource::createDefaultSource(parent))
-	, m_ProgressDialog(new SystemProgressDialog(this))
 	, initialized(false)
 {
-	m_ProgressDialog->setState(SystemUiProgressState::Active);
-	m_ProgressDialog->setEmoticonsEnabled(true);
-	m_ProgressDialog->setTitle(tr("Initializing Friend Tracker..."));
-	m_ProgressDialog->cancelButton()->setLabel(tr("Cancel"));
-	m_ProgressDialog->confirmButton()->setLabel(QString::null);
-
 	// Start getting current location
 	if (m_positionInfoSource == 0) {
 		SystemToast toast;
@@ -54,7 +50,14 @@ WebMaps::WebMaps(QObject *parent)
 		toast.exec();
 		throw InitializationException("Failed to get current location");
 	}
-	m_positionInfoSource->setProperty("accuracy", 2.0);	// set accuracy within 2m
+
+	// applied previously saved update frequency settings
+	FriendtrackerUI* friendtracker = (FriendtrackerUI *) parent;
+	m_positionInfoSource->setUpdateInterval((int)friendtracker->getValueFor("updateFrequencySlider", "5").toDouble() * 1000);
+	//m_positionInfoSource->setProperty("accuracy", 2.0);	// set accuracy within 2m
+	m_positionInfoSource->setProperty( "canRunInBackground", true );
+	m_positionInfoSource->setProperty( "provider", "hybrid" );
+	m_positionInfoSource->setProperty( "fixType", "best" );
 }
 
 void WebMaps::init()
@@ -74,15 +77,6 @@ void WebMaps::init()
 	Q_UNUSED(positionUpdatedConnected);
 
 	m_positionInfoSource->startUpdates();		// start get my location event loop
-
-	m_ProgressDialog->setBody("getting current location...");
-	m_ProgressDialog->setProgress(60);
-
-	SystemUiResult::Type result = m_ProgressDialog->exec();
-	if (result != SystemUiResult::ConfirmButtonSelection) {
-	    cout << "initialization error!" << endl;
-	    throw InitializationException("Initialization canceled by user");
-	}
 }
 
 QVariantList WebMaps::worldToPixelInvokable(QObject* mapObject, double lat, double lon) const
@@ -135,15 +129,15 @@ QPoint WebMaps::worldToPixel(QObject* mapObject, double latitude, double longitu
 /*
  * Update GeoLocation update interval to the user specified value
  */
-void WebMaps::setGeoLocationInterval(float value)
+void WebMaps::setGeoLocationInterval(float value, bool showToast)
 {
 	if (m_positionInfoSource) {
-		SystemToast toast;
-		stringstream ss;
-		ss << "Location Update Interval changed to "
-				<< (int)value << " seconds";
-		toast.setBody(ss.str().c_str());
-		toast.exec();
+		if (showToast) {
+			stringstream ss;
+			ss << "Location Update Interval changed to "
+					<< (int)value << " seconds";
+			Utility::execToast(ss.str().c_str());
+		}
 		m_positionInfoSource->setUpdateInterval((int)value * 1000);
 	}
 }
@@ -155,7 +149,7 @@ void WebMaps::setGeoLocationInterval(float value)
 void WebMaps::setRegularMode()
 {
 	// unsubscribe all friends
-	cout << "unsubscribing..." << endl;
+	qDebug() << "unsubscribing...";
 	emit unsubscribe();
 }
 
@@ -166,7 +160,7 @@ void WebMaps::setRegularMode()
 void WebMaps::setRealtimeMode()
 {
 	// subscribe to all friends
-	cout << "subscribing..." << endl;
+	qDebug() << "subscribing...";
 	emit subscribe();
 }
 
@@ -182,34 +176,34 @@ void WebMaps::updateFriendLocation(const QString& ppId, double x, double y, int 
 
 void WebMaps::positionUpdateTimeout()
 {
-	m_ProgressDialog->setBody("Initialization timeout");
-	m_ProgressDialog->setState(SystemUiProgressState::Error);
-	m_ProgressDialog->show();
-
 	if ( m_positionInfoSource->property("replyErrorCode").isValid()  ) {
 	    bb::location::PositionErrorCode::Type errorCode
 	    	= m_positionInfoSource->property("replyErrorCode").value<bb::location::PositionErrorCode::Type>();
-	    cout << "LM Error Code: ";
+	    qDebug() << "LM Error Code: ";
 	    switch ( errorCode ) {
 	        // this error code should not be encountered here (included for completeness)
 	        case bb::location::PositionErrorCode::None:
-	            cout << "None" << endl;
+	            qDebug() << "None";
+	            Utility::execToast("Geolocation Error: None");
 	            break;
 
 	        case bb::location::PositionErrorCode::FatalDisabled:
-	            cout << "Fatal - disabled (turn on location services!)" << endl;
+	            qDebug() << "Fatal - disabled (turn on location services!)";
+	            Utility::execToast("Geolocation Error: Fatal - disabled (turn on location services!");
 	            break;
 
 	        // this error code should not normally be encountered, may require setting
 	        // the reset property to resolve.
 	        case bb::location::PositionErrorCode::FatalInsufficientProviders:
-	            cout << "Fatal - insufficient providers" << endl;
+	            qDebug() << "Fatal - insufficient providers";
+	            Utility::execToast("Geolocation Error: Fatal - insufficient providers");
 	            break;
 
 	        // this error code could be encountered if an invalid value is set for a
 	        // property related to a BB10 Location Manager feature.
 	        case bb::location::PositionErrorCode::FatalInvalidRequest:
-	            cout << "Fatal - invalid request" << endl;
+	            qDebug() << "Fatal - invalid request";
+	            Utility::execToast("Geolocation Error: Fatal - invalid request");
 	            break;
 
 	        // the following warning codes are simply to provide more information;
@@ -217,15 +211,17 @@ void WebMaps::positionUpdateTimeout()
 	        // It may be opportune to inform the user that finding the location is
 	        // taking longer than expected.
 	        case bb::location::PositionErrorCode::WarnTimeout:
-	            cout << "Warning - timeout" << endl;
+	            qDebug() << "Warning - timeout";
+	            Utility::execToast("Geolocation Error: Warning - timeout");
 	            break;
 
 	        case bb::location::PositionErrorCode::WarnLostTracking:
-	            cout << "Warning - lost tracking" << endl;
+	            qDebug() << "Warning - lost tracking";
+	            Utility::execToast("Geolocation Error: Warning - lost tracking");
 	            break;
 
 	        default:
-	            cout << "Unknown (bad enum value)" << endl;
+	            qWarning() << "Unknown (bad enum value)";
 	            break;
 	    }
 	}
@@ -236,15 +232,7 @@ void WebMaps::positionUpdatedHandler(const QGeoPositionInfo& update)
 	myLocation = update.coordinate();
 
 	if (!initialized) {
-		m_ProgressDialog->setBody("Initialization complete");
-		m_ProgressDialog->setProgress(100);
-		m_ProgressDialog->cancelButton()->setLabel(QString::null);
-		m_ProgressDialog->confirmButton()->setLabel(tr("Ok"));
-		m_ProgressDialog->setState(SystemUiProgressState::Inactive);
-		m_ProgressDialog->show();
-
 		emit gotMyLocation(update.coordinate());
-
 		initialized = true;
 	} else {
 		emit myLocationChanged(myLocation);
@@ -261,21 +249,29 @@ double WebMaps::getMyLongitude() const
 	return myLocation.longitude();
 }
 
-void WebMaps::showFriends()
+void WebMaps::startChat(QObject* parent, const QString& pin)
 {
-	// bring up bbm chat (just forn now)
-	cout << "BBM CHAT!!!!" << endl;
-	InvokeManager invokeManager(this);
+	InvokeManager* invokeManager = new InvokeManager(parent);
 	InvokeRequest request;
-	request.setTarget("sys.bbm.sharehandler");
+	//request.setTarget("sys.bbm.sharehandler");
 	request.setAction("bb.action.BBMCHAT");
-	//request.setUri("pin:24E481CD");
-	request.setUri("pin:2A91A09F");
+	request.setMimeType("text/plain");
+	request.setUri(pin);
 	request.setTargetTypes(InvokeTarget::Card);
-	InvokeTargetReply* reply = invokeManager.invoke(request);
-	reply->setParent(this);
-	connect(reply, SIGNAL(finished()), this, SLOT(onInvokeResult()));
+	InvokeTargetReply* reply = invokeManager->invoke(request);
+	reply->setParent(parent);
+	bool result = connect(reply, SIGNAL(finished()), this, SLOT(onInvokeResult()));
+	Q_ASSERT(result);
+	result = connect(invokeManager, SIGNAL(childCardDone(const bb::system::CardDoneMessage &)),
+			this, SLOT(chatCardDone(const bb::system::CardDoneMessage &)));
+	Q_ASSERT(result);
+	invokeManager->closeChildCard();
 	m_invokeTargetReply = reply;
+}
+
+void WebMaps::chatCardDone(const bb::system::CardDoneMessage& msg)
+{
+	qDebug() << "MSG REASON: " << msg.reason();
 }
 
 void WebMaps::onInvokeResult()
@@ -285,25 +281,28 @@ void WebMaps::onInvokeResult()
 	        // Invocation could not find the target
 	        // did we use the right target ID?
 	    case InvokeReplyError::NoTarget: {
-	            cout << "invokeFinished(): Error: no target" << endl;
+	            qWarning() << "invokeFinished(): Error: no target";
+	            Utility::showToast("invokeFinished(): Error: no target");
 	            break;
 	        }
 	        // There was a problem with the invoke request
 	        // did we set all the values correctly?
 	    case InvokeReplyError::BadRequest: {
-	            cout << "invokeFinished(): Error: bad request" << endl;
+	            qWarning() << "invokeFinished(): Error: bad request";
+	            Utility::showToast("invokeFinished(): Error: bad request");
 	            break;
 	        }
 	        // Something went completely
 	        // wrong inside the invocation request
 	        // Find an alternate route :(
 	    case InvokeReplyError::Internal: {
-	            cout << "invokeFinished(): Error: internal" << endl;
+	            qWarning() << "invokeFinished(): Error: internal";
+	            Utility::showToast("invokeFinished(): Error: internal");
 	            break;
 	        }
 	        //Message received if the invoke request is successful
 	    default:
-	        cout << "invokeFinished(): Invoke Succeeded" << endl;
+	        qWarning() << "invokeFinished(): Invoke Succeeded";
 	        break;
 	    }
 

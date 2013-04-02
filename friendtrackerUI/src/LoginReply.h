@@ -2,7 +2,7 @@
  * LoginReply.h
  *
  *  Created on: 2013-03-16
- *      Author: soh
+ *      Author: Sukwon Oh
  */
 
 #ifndef LOGINREPLY_H_
@@ -23,11 +23,13 @@ public:
 
 	QString getSessionKey() const;
 	QStringList getFriends() const;
+	QStringList getPins() const;
 
 private:
 	bool m_status;
 	QString m_sessionKey;
 	QStringList m_ppIds;
+	QStringList m_pins;
 };
 
 #endif /* LOGINREPLY_H_ */

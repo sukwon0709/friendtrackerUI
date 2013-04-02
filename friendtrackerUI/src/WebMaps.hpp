@@ -19,6 +19,7 @@ using namespace QtMobilitySubset;
 namespace bb{
 	namespace system {
 		class InvokeTargetReply;
+		class CardDoneMessage;
 	}
 }
 
@@ -42,8 +43,9 @@ public:
     void setRegularMode();
     void setRealtimeMode();
     void updateFriendLocation(const QString &, double, double, int);
+    Q_INVOKABLE void startChat(QObject* parent, const QString& pin);
 
-    Q_INVOKABLE void setGeoLocationInterval(float value);
+    Q_INVOKABLE void setGeoLocationInterval(float value, bool showToast = true);
     Q_INVOKABLE QVariantList worldToPixelInvokable(QObject* mapObject, double lat, double lon) const;
     Q_INVOKABLE void updateMarkers(QObject* mapObject, QObject* containerObject) const;
     Q_INVOKABLE void addPin(const QString& ppId, QObject* object);
@@ -52,8 +54,9 @@ public:
 public slots:
     void positionUpdateTimeout();
     void positionUpdatedHandler(const QGeoPositionInfo& info);
-    void showFriends();
+
     void onInvokeResult();
+    void chatCardDone(const bb::system::CardDoneMessage& msg);
 
 signals:
     // The change notification signals of the properties
@@ -70,7 +73,6 @@ private:
     QPoint worldToPixel(QObject* mapObject, double latitude, double longitude) const;
 
     QGeoPositionInfoSource* m_positionInfoSource;
-    bb::system::SystemProgressDialog* m_ProgressDialog;
     QGeoCoordinate myLocation;
     bool initialized;
     bb::system::InvokeTargetReply* m_invokeTargetReply;

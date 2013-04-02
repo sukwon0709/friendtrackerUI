@@ -2,7 +2,7 @@
  * FriendList.cpp
  *
  *  Created on: 2013-03-30
- *      Author: soh
+ *      Author: Sukwon Oh
  */
 
 #include "FriendItem.hpp"
@@ -19,10 +19,11 @@ using namespace std;
 using namespace bb::platform::bbm;
 using namespace bb::cascades;
 
-FriendItem::FriendItem(QObject* parent, Contact& contact, ContactService* contactService)
+FriendItem::FriendItem(QObject* parent, Contact& contact, ContactService* contactService, const QString& pin)
 : QObject(parent)
 , m_contact(contact)
 , m_contactService(contactService)
+, m_pin(pin)
 {
 	m_displayName = m_contact.displayName();
 
@@ -38,7 +39,7 @@ FriendItem::FriendItem(QObject* parent, Contact& contact, ContactService* contac
 	// asynchronously populate displayPicture
 	bool result = m_contactService->requestDisplayPicture(contact.handle());
 	if (!result) {
-		cout << "FAILED TO GET FRIEND's PROFILE PICTURE" << endl;
+		qWarning() << "FAILED TO GET FRIEND's PROFILE PICTURE";
 	}
 
 	m_userStatus = m_contact.status();
@@ -57,7 +58,7 @@ Image FriendItem::profilePicture() const
 	// asynchronously populate displayPicture
 	bool result = m_contactService->requestDisplayPicture(m_contact.handle());
 	if (!result) {
-		cout << "FAILED TO GET FRIEND's PROFILE PICTURE" << endl;
+		qWarning() << "FAILED TO GET FRIEND's PROFILE PICTURE";
 	}
 	return m_profilePicture;
 }
@@ -80,6 +81,11 @@ QString FriendItem::personalMessage() const
 QString FriendItem::ppId() const
 {
 	return m_ppId;
+}
+
+QString FriendItem::pin() const
+{
+	return m_pin;
 }
 
 /*

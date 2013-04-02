@@ -19,6 +19,7 @@
 #include <bb/system/SystemToast>
 #include <bb/ImageData>
 #include <bb/utility/ImageConverter>
+#include <bb/device/HardwareInfo>
 
 #include <QSettings>
 
@@ -55,6 +56,9 @@ FriendtrackerUI::FriendtrackerUI(bb::cascades::Application *app, const QString& 
 , m_visibility(1)
 , m_numProfilePictureUpdates(0)
 , m_currentMode(realtime)
+, m_searchManager(Utility::getSearchManager())
+, m_initial(true)
+, m_state(fullScreen)
 
 {
 	// get user profile when bbm registration succeeds
@@ -79,6 +83,13 @@ FriendtrackerUI::FriendtrackerUI(bb::cascades::Application *app, const QString& 
 			SLOT(setOnlinePpIds(const QStringList &)));
 	Q_ASSERT(connected);
 
+	// get pinlist from login
+	connected = QObject::connect(m_serverInterface,
+			SIGNAL(onPinListChanged(const QStringList &)),
+			this,
+			SLOT(setPins(const QStringList &)));
+	Q_ASSERT(connected);
+
 	connected = QObject::connect(m_serverInterface,
 			SIGNAL(loginFailed()),
 			this,
@@ -96,7 +107,77 @@ FriendtrackerUI::FriendtrackerUI(bb::cascades::Application *app, const QString& 
     		this,
     		SLOT(pullLocations()));
     Q_ASSERT(connected);
+
+    connected = connect(m_app, SIGNAL(fullscreen()), this, SLOT(changeToFullScreenMode()));
+    Q_ASSERT(connected);
+
+    connected = connect(m_app, SIGNAL(thumbnail()), this, SLOT(changeToThumbnailMode()));
+    Q_ASSERT(connected);
+
+    connected = connect(m_app, SIGNAL(invisible()), this, SLOT(changeToInvisible()));
+    Q_ASSERT(connected);
 	Q_UNUSED(connected);
+
+	QFile defaultImage("app/native/assets/images/default.jpg");
+	if (!defaultImage.open(QIODevice::ReadOnly)) {
+		qDebug() << "FAILED TO OPEN DEFAULT IMAGE";
+	}
+	QByteArray imageData = defaultImage.readAll();
+	m_defaultImage = Utility::scaleImage(imageData, 140, 140);
+}
+
+void FriendtrackerUI::changeToFullScreenMode()
+{
+	if (m_webMaps != 0) {
+		if (m_state == thumbNail || m_state == invisible) {
+			// restore mode
+			if (m_currentMode == realtime) {
+				setRealtimeMode();
+			} else {
+				setRegularMode(getValueFor("pullFrequencySlider", "5").toDouble());
+			}
+
+			// restore location update frequency
+			m_webMaps->setGeoLocationInterval(getValueFor("updateFrequencySlider", "5").toDouble());
+		}
+		qDebug() << "FULL SCREEN";
+
+		m_state = fullScreen;
+	}
+}
+
+void FriendtrackerUI::changeToThumbnailMode()
+{
+	if (m_webMaps != 0) {
+		if (m_state == fullScreen) {
+			// stop getting friends locations
+			m_regularModeTimer->stop();			// stop timer for getting friends locations
+			m_webMaps->setRegularMode();		// unsubscribe to realtime stream
+
+			// increase timeout value for pushing location to server to every 5 min
+			m_webMaps->setGeoLocationInterval(300);
+		}
+		qDebug() << "THUMBNAIL";
+
+		m_state = thumbNail;
+	}
+}
+
+void FriendtrackerUI::changeToInvisible()
+{
+	if (m_webMaps != 0) {
+		if (m_state == fullScreen) {
+			// stop getting friends locations
+			m_regularModeTimer->stop();			// stop timer for getting friends locations
+			m_webMaps->setRegularMode();		// unsubscribe to realtime stream
+
+			// increase timeout value for pushing location to server to every 5 min
+			m_webMaps->setGeoLocationInterval(300);
+		}
+		qDebug() << "INVISIBLE";
+
+		m_state = invisible;
+	}
 }
 
 /*
@@ -127,9 +208,11 @@ void FriendtrackerUI::initMap()
 
 void FriendtrackerUI::login(const QGeoCoordinate& coord)
 {
+	bb::device::HardwareInfo hardwareInfo;
 	LoginMessage msg(m_profile->ppId(),
 			coord.latitude(),
 			coord.longitude(),
+			hardwareInfo.pin(),
 			m_ppIds);
 
 	m_serverInterface->sendMessage(msg);
@@ -160,20 +243,55 @@ void FriendtrackerUI::setOnlinePpIds(const QStringList& ppIds)
 	m_onlinePpIds.append(QString("testusr3"));
 }
 
+void FriendtrackerUI::setPins(const QStringList& pins)
+{
+	m_pins = pins;
+	m_pins.append(QString("testpin1"));
+	m_pins.append(QString("testpin2"));
+	m_pins.append(QString("testpin3"));
+}
+
 QStringList FriendtrackerUI::onlinePpIds()
 {
 	return m_onlinePpIds;
 }
 
+QStringList FriendtrackerUI::pins()
+{
+	return m_pins;
+}
+
+QString FriendtrackerUI::getPin(const QString& ppId)
+{
+	for (int i = 0; i < m_onlinePpIds.size(); i++) {
+		if (m_onlinePpIds.at(i) == ppId) {
+			return m_pins.at(i);
+		}
+	}
+
+	return "";
+}
+
 void FriendtrackerUI::updateLocation(const QGeoCoordinate& coord)
 {
-	UpdateLocationMessage msg(m_profile->ppId(),
-			coord.latitude(),
-			coord.longitude(),
-			m_visibility,
-			m_sessionKey);
+	if (!m_coord.isValid()) {
+		m_coord = coord;
+	} else {
+		// update location when user moves more than 5m
+		if (m_coord.isValid() /*&& coord.distanceTo(m_coord) > 5.0*/) {
+			UpdateLocationMessage msg(m_profile->ppId(),
+					coord.latitude(),
+					coord.longitude(),
+					m_visibility,
+					m_sessionKey);
 
-	m_serverInterface->sendMessage(msg);
+			m_serverInterface->sendMessage(msg);
+
+			m_coord = coord;
+		}
+	}
+
+	emit myLocationUpdated(coord.latitude(), coord.longitude());
 }
 
 /*
@@ -205,6 +323,15 @@ void FriendtrackerUI::setRealtimeMode()
 void FriendtrackerUI::setVisibility(bool visibility)
 {
 	m_visibility = (visibility ? 1 : 0);
+
+	// use update location request to immediately update visibility
+	UpdateLocationMessage msg(m_profile->ppId(),
+			m_webMaps->getMyLatitude(),
+			m_webMaps->getMyLongitude(),
+			m_visibility,
+			m_sessionKey);
+
+	m_serverInterface->sendMessage(msg);
 }
 
 /*
@@ -230,7 +357,11 @@ void FriendtrackerUI::updateFriendsLocation(const QList<User>& friends)
 
 bb::cascades::Image FriendtrackerUI::getProfilePicture()
 {
-	const QByteArray origImage = m_profile->displayPicture();
+	QByteArray origImage = m_profile->displayPicture();
+	bb::platform::bbm::ImageType::Type type = m_profile->displayPictureMimeType();
+	if (type == 0) {
+		return m_defaultImage;
+	}
 	return Utility::scaleImage(origImage, 140, 140);
 }
 
@@ -244,7 +375,7 @@ void FriendtrackerUI::askFriendProfilePicture(const QString& ppId)
 		if (contacts.at(i).ppId() == ppId) {
 			bool result = m_contactService->requestDisplayPicture(contacts.at(i).handle());
 			if (!result) {
-				cout << "FAILED TO GET FRIEND's PROFILE PICTURE" << endl;
+				qWarning() << "FAILED TO GET FRIEND's PROFILE PICTURE";
 			}
 			break;
 		}
@@ -302,13 +433,13 @@ void FriendtrackerUI::saveUserProfilePicture(const QByteArray& imageData)
 {
 	QImage imageToWrite;
 	if (!imageToWrite.loadFromData(imageData)) {
-		cout << "failed to load profile picture for saving!" << endl;
+		qWarning() << "failed to load profile picture for saving!";
 	} else {
 		imageToWrite = imageToWrite.scaled(140, 140, Qt::KeepAspectRatio);	// profile picture is 80x80
 		stringstream ss;
 		ss << "app/native/assets/profile.jpg";
 		if (!imageToWrite.save(ss.str().c_str(), "JPG")) {
-			cout << "failed to save profile picture!" << endl;
+			qWarning() << "failed to save profile picture!";
 		}
 	}
 }
@@ -322,23 +453,23 @@ GroupDataModel* FriendtrackerUI::friendListModel()
 
 	QList<Contact> contacts = m_contactService->contacts();
 	for (QList<Contact>::iterator it = contacts.begin(); it != contacts.end(); ++it) {
-		cout << "POPULATE: " << it->displayName().toStdString() << endl;
-		groupDataModel->insert(new FriendItem(this, *it, m_contactService));
+		qDebug() << "POPULATE: " << it->displayName();
+		groupDataModel->insert(new FriendItem(this, *it, m_contactService, getPin(it->ppId())));
 	}
 
 	// Only for testing scenario
-	groupDataModel->insert(new MockFriendItem(this, "testusr1", UserStatus::Available, "Available", "I am testusr1!"));
-	groupDataModel->insert(new MockFriendItem(this, "testusr2", UserStatus::Available, "Available", "cool weather!"));
-	groupDataModel->insert(new MockFriendItem(this, "testusr3", UserStatus::Available, "Available", "I'm hungry!"));
+//	groupDataModel->insert(new MockFriendItem(this, "testusr1", UserStatus::Available, "Available", "I am testusr1!"));
+//	groupDataModel->insert(new MockFriendItem(this, "testusr2", UserStatus::Available, "Available", "cool weather!"));
+//	groupDataModel->insert(new MockFriendItem(this, "testusr3", UserStatus::Available, "Available", "I'm hungry!"));
 
-	cout << "POPULATED" << endl;
+	qDebug() << "POPULATED";
 
 	return groupDataModel;
 }
 
 void FriendtrackerUI::loadMap()
 {
-	cout << "loadMap started" << endl;
+	qDebug() << "loadMap started";
 
 	// save user's profile before loading the map
 	saveUserProfilePicture();
@@ -360,10 +491,10 @@ void FriendtrackerUI::loadMap()
     m_app->setScene(root);
 }
 
-void FriendtrackerUI::getAddress(QObject* containerObject, double lat, double lng)
+void FriendtrackerUI::getAddress(QObject* containerObject, double lat, double lng, const QString& property)
 {
 	// FIXME: I know this is a leak
-	GetAddressHelper* helper = new GetAddressHelper(containerObject, lat, lng);
+	GetAddressHelper* helper = new GetAddressHelper(containerObject, lat, lng, property);
 	Q_UNUSED(helper);
 }
 
@@ -384,16 +515,36 @@ void FriendtrackerUI::initUserProfile()
 			SLOT(returnFriendDisplayPicture(const QString &,
 			const bb::platform::bbm::ImageType::Type, const QByteArray &)));
 	Q_ASSERT(connected);
+	connected = QObject::connect(m_contactService, SIGNAL(contactListUpdated()),
+			this,
+			SLOT(updatePpIds()));
+	Q_ASSERT(connected);
 	Q_UNUSED(connected);
 
+	initContactService();
+}
+
+void FriendtrackerUI::initContactService()
+{
+	// MUST NOT REMOVE THESE LINES or ContactService operations will fail!
+	cout << "registration status: " << m_regHandler->context().registrationState() << endl;
+	cout << "Contact service VALIDITY " << m_contactService->isValid() << endl;
 	QList<Contact> contacts = m_contactService->contacts();
-	QStringList ppIds;
-	for (int i = 0; i < contacts.size(); i++) {
-		ppIds.append(contacts.at(i).ppId());
+	for (QList<Contact>::iterator it = contacts.begin(); it != contacts.end(); ++it) {
+		m_ppIds.append(it->ppId());
 	}
-	m_ppIds = ppIds;
 
 	emit userProfileInitialized();
+}
+
+void FriendtrackerUI::showPin(const QString& ppId)
+{
+	emit showPinSignal(ppId);
+}
+
+void FriendtrackerUI::hidePin(const QString& ppId)
+{
+	emit hidePinSignal(ppId);
 }
 
 QString FriendtrackerUI::getValueFor(const QString &objectName, const QString &defaultValue)
@@ -414,4 +565,30 @@ void FriendtrackerUI::saveValueFor(const QString &objectName, const QString &inp
     // A new value is saved to the application settings object.
     QSettings settings;
     settings.setValue(objectName, QVariant(inputValue));
+}
+
+bool FriendtrackerUI::getInitial() {
+	return m_initial;
+}
+
+void FriendtrackerUI::setInitial(bool initial) {
+	qDebug() << "initial is now " << initial;
+	m_initial = initial;
+}
+
+void FriendtrackerUI::updatePpIds()
+{
+	QList<Contact> contacts = m_contactService->contacts();
+	for (QList<Contact>::iterator it = contacts.begin(); it != contacts.end(); ++it) {
+		m_ppIds.append(it->ppId());
+	}
+
+	for (QStringList::iterator it = m_ppIds.begin(); it != m_ppIds.end(); ++it) {
+		for (QStringList::iterator it2 = m_onlinePpIds.begin(); it2 != m_onlinePpIds.end(); ++it2) {
+			if (*it != *it2) {
+				qDebug() << "Added: " << (*it);
+				m_onlinePpIds.append(*it);
+			}
+		}
+	}
 }

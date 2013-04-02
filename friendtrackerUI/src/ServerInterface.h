@@ -2,7 +2,7 @@
  * ServerInterface.h
  *
  *  Created on: 2013-03-16
- *      Author: soh
+ *      Author: Sukwon Oh
  */
 
 #ifndef SERVERINTERFACE_H_
@@ -32,6 +32,7 @@ public:
 signals:
 	void onSessionKeyChanged(const QString& sessionKey);
 	void onFriendListChanged(const QStringList &);
+	void onPinListChanged(const QStringList &);
 	void onGetLocations(const QList<User> &);
 	void loginSuccess();
 	void loginFailed();

@@ -21,6 +21,7 @@
 #include "GetLocationsReply.h"
 
 #include <QtLocationSubset/QGeoCoordinate>
+#include <QtLocationSubset/QGeoSearchManager>
 
 // forward decl
 namespace bb {
@@ -52,11 +53,17 @@ class FriendtrackerUI : public QObject
      * List of user's friends ppIds
      */
     Q_PROPERTY(QStringList onlinePpIds READ onlinePpIds WRITE setOnlinePpIds NOTIFY onlinePpIdsChanged)
+    Q_PROPERTY(QStringList pins READ pins WRITE setPins NOTIFY pinsChanged)
     Q_PROPERTY(bb::cascades::GroupDataModel* friendListModel READ friendListModel)
+    Q_PROPERTY(bool initial READ getInitial WRITE setInitial)
 
 public:
     FriendtrackerUI(bb::cascades::Application *app, const QString& uuid);
     virtual ~FriendtrackerUI() {}
+
+    QString getPin(const QString& ppId);
+    bool getInitial();
+    void setInitial(bool);
 
     /*
      * unsubscribe to realtime updates and starts a timer for regular location pulling with given frequency
@@ -86,7 +93,7 @@ public:
     /*
      * asynchronously lookup the person's address and update the bubble (containerObject)
      */
-    Q_INVOKABLE void getAddress(QObject* containerObject, double x, double y);
+    Q_INVOKABLE void getAddress(QObject* containerObject, double x, double y, const QString& property);
 
     /*
      * get profile picture
@@ -98,6 +105,17 @@ public:
      */
     Q_INVOKABLE void askFriendProfilePicture(const QString &);
 
+    /*
+     * show pin
+     */
+    Q_INVOKABLE void showPin(const QString &);
+
+    /*
+     * hide pin
+     */
+    Q_INVOKABLE void hidePin(const QString &);
+
+
 signals:
 	void userProfileInitialized();
 
@@ -105,6 +123,8 @@ signals:
 	 * should be connected to a slot to update friends list on websocket.js
 	 */
 	void onlinePpIdsChanged(const QStringList& ppIds);
+
+	void pinsChanged(const QStringList& pins);
 
 	/*
 	 * user's profile picture changed signal
@@ -115,6 +135,11 @@ signals:
 	 * friend's profile picture changed signal
 	 */
 	void updateFriendProfilePictureOnMap(const QString& ppId, const bb::cascades::Image &);
+
+	void showPinSignal(const QString& ppId);
+	void hidePinSignal(const QString& ppId);
+
+	void myLocationUpdated(double lat, double lng);
 
 public Q_SLOTS:
 	/**
@@ -155,6 +180,9 @@ public Q_SLOTS:
 	QStringList onlinePpIds();
 	void setOnlinePpIds(const QStringList& ppIds);
 
+	QStringList pins();
+	void setPins(const QStringList& pins);
+
 	/*
 	 * send pull locations request
 	 */
@@ -180,6 +208,28 @@ public Q_SLOTS:
 	 */
 	bb::cascades::GroupDataModel* friendListModel();
 
+	/*
+	 * when ContactService populates contacts late, we update our ppIds asynchronously here
+	 */
+	void updatePpIds();
+
+	/*
+	 * Restores to user set server settings when the app is brought back to foreground
+	 */
+	void changeToFullScreenMode();
+
+	/*
+	 * Saves battery and data by unsubscribing from realtime mode and stop getting locations of friends.
+	 * Also, increase timeout for pushing location to server to every 5 min.
+	 */
+	void changeToThumbnailMode();
+
+	/*
+	 * Saves battery and data by unsubscribing from realtime mode and stop getting locations of friends.
+	 * Also, increase timeout for pushing location to server to every 5 min.
+	 */
+	void changeToInvisible();
+
 
 private:
 	/*
@@ -201,6 +251,14 @@ private:
 		regular
 	};
 
+	enum State {
+		fullScreen,
+		thumbNail,
+		invisible
+	};
+
+	void initContactService();
+
 	bb::cascades::Application* m_app;
 	QString m_uuid;
 	WebMaps* m_webMaps;
@@ -212,12 +270,18 @@ private:
 	ServerInterface* m_serverInterface;
 	Settings* m_settings;
 	QStringList m_ppIds;
+	QStringList m_pins;
 	QStringList m_onlinePpIds;
 	QTimer* m_regularModeTimer;
 	int m_visibility;
 	int m_numProfilePictureUpdates;
 	QString m_previousProfilePicturePath;
 	Mode m_currentMode;
+	QGeoCoordinate m_coord;
+	QGeoSearchManager* m_searchManager;
+	bool m_initial;
+	QByteArray m_defaultImage;
+	State m_state;
 };
 
 #endif /* FriendtrackerUI_HPP_ */

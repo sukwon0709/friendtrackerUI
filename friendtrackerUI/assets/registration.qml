@@ -1,5 +1,7 @@
 /**
  * BBM registration page
+ * 
+ * by Sukwon Oh, Bill Chen
  */
 import bb.cascades 1.0
 
@@ -28,6 +30,7 @@ NavigationPane {
                 horizontalAlignment: HorizontalAlignment.Center
                 verticalAlignment: VerticalAlignment.Center
     
+    			/*
                 Label {
                     horizontalAlignment: HorizontalAlignment.Center
                     text: _registrationHandler.statusMessage
@@ -37,7 +40,8 @@ NavigationPane {
                     }
                     multiline: true
                 }
-    
+                */
+    			
                 Button {
                     horizontalAlignment: HorizontalAlignment.Center
     
@@ -48,6 +52,7 @@ NavigationPane {
                     }
                 }
                 // Display the main page if the user chooses to Continue
+                /*
                 Button {
                     horizontalAlignment: HorizontalAlignment.Center
                     visible: _registrationHandler.allowed
@@ -56,6 +61,7 @@ NavigationPane {
                         _registrationHandler.finishRegistration()
                     }
                 }
+                */
             }
         }         
     }

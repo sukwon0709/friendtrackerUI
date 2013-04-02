@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'WebMaps.hpp'
 **
-** Created: Sat Mar 30 13:25:26 2013
+** Created: Tue Apr 2 11:57:13 2013
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.4)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,8 +23,8 @@ static const uint qt_meta_data_WebMaps[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      17,   14, // methods
-       2,   99, // properties
+      19,   14, // methods
+       2,  109, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
@@ -44,18 +44,20 @@ static const uint qt_meta_data_WebMaps[] = {
      247,    8,    8,    8, 0x0a,
      276,  271,    8,    8, 0x0a,
      317,    8,    8,    8, 0x0a,
-     331,    8,    8,    8, 0x0a,
+     338,  334,    8,    8, 0x0a,
 
  // methods: signature, parameters, type, tag, flags
-     354,  348,    8,    8, 0x02,
-     415,  397,  384,    8, 0x02,
-     487,  461,    8,    8, 0x02,
-     532,  520,    8,    8, 0x02,
-     571,  566,  557,    8, 0x02,
+     391,  380,    8,    8, 0x02,
+     435,  419,    8,    8, 0x02,
+     476,  470,    8,    8, 0x22,
+     537,  519,  506,    8, 0x02,
+     609,  583,    8,    8, 0x02,
+     654,  642,    8,    8, 0x02,
+     693,  688,  679,    8, 0x02,
 
  // properties: name, type, flags
-     594,  587, 0x06495001,
-     600,  587, 0x06495001,
+     716,  709, 0x06495001,
+     722,  709, 0x06495001,
 
  // properties: notify_signal_id
        0,
@@ -73,8 +75,11 @@ static const char qt_meta_stringdata_WebMaps[] = {
     "friendLocationChanged(QString,double,double,int)\0"
     "positionUpdateTimeout()\0info\0"
     "positionUpdatedHandler(QGeoPositionInfo)\0"
-    "showFriends()\0onInvokeResult()\0value\0"
-    "setGeoLocationInterval(float)\0"
+    "onInvokeResult()\0msg\0"
+    "chatCardDone(bb::system::CardDoneMessage)\0"
+    "parent,pin\0startChat(QObject*,QString)\0"
+    "value,showToast\0setGeoLocationInterval(float,bool)\0"
+    "value\0setGeoLocationInterval(float)\0"
     "QVariantList\0mapObject,lat,lon\0"
     "worldToPixelInvokable(QObject*,double,double)\0"
     "mapObject,containerObject\0"
@@ -100,14 +105,16 @@ void WebMaps::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         case 7: _t->friendLocationChanged((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2])),(*reinterpret_cast< double(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4]))); break;
         case 8: _t->positionUpdateTimeout(); break;
         case 9: _t->positionUpdatedHandler((*reinterpret_cast< const QGeoPositionInfo(*)>(_a[1]))); break;
-        case 10: _t->showFriends(); break;
-        case 11: _t->onInvokeResult(); break;
-        case 12: _t->setGeoLocationInterval((*reinterpret_cast< float(*)>(_a[1]))); break;
-        case 13: { QVariantList _r = _t->worldToPixelInvokable((*reinterpret_cast< QObject*(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2])),(*reinterpret_cast< double(*)>(_a[3])));
+        case 10: _t->onInvokeResult(); break;
+        case 11: _t->chatCardDone((*reinterpret_cast< const bb::system::CardDoneMessage(*)>(_a[1]))); break;
+        case 12: _t->startChat((*reinterpret_cast< QObject*(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
+        case 13: _t->setGeoLocationInterval((*reinterpret_cast< float(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
+        case 14: _t->setGeoLocationInterval((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 15: { QVariantList _r = _t->worldToPixelInvokable((*reinterpret_cast< QObject*(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2])),(*reinterpret_cast< double(*)>(_a[3])));
             if (_a[0]) *reinterpret_cast< QVariantList*>(_a[0]) = _r; }  break;
-        case 14: _t->updateMarkers((*reinterpret_cast< QObject*(*)>(_a[1])),(*reinterpret_cast< QObject*(*)>(_a[2]))); break;
-        case 15: _t->addPin((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< QObject*(*)>(_a[2]))); break;
-        case 16: { QObject* _r = _t->getPin((*reinterpret_cast< const QString(*)>(_a[1])));
+        case 16: _t->updateMarkers((*reinterpret_cast< QObject*(*)>(_a[1])),(*reinterpret_cast< QObject*(*)>(_a[2]))); break;
+        case 17: _t->addPin((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< QObject*(*)>(_a[2]))); break;
+        case 18: { QObject* _r = _t->getPin((*reinterpret_cast< const QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QObject**>(_a[0]) = _r; }  break;
         default: ;
         }
@@ -146,9 +153,9 @@ int WebMaps::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 17)
+        if (_id < 19)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 17;
+        _id -= 19;
     }
 #ifndef QT_NO_PROPERTIES
       else if (_c == QMetaObject::ReadProperty) {

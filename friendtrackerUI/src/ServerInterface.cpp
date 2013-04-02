@@ -2,7 +2,7 @@
  * ServerInterface.cpp
  *
  *  Created on: 2013-03-16
- *      Author: soh
+ *      Author: Sukwon Oh
  */
 
 #include "ServerInterface.h"
@@ -41,7 +41,7 @@ void ServerInterface::sendMessage(const Message& msg) const
 	request.setRawHeader("Content-Type", "application/json");
 
 	const QByteArray& byteMsg = msg.serialize();
-	cout << "sending msg: " << QString(byteMsg).toStdString() << endl;
+	qDebug() << "sending msg: " << QString(byteMsg);
 
 	m_NetworkAccessManager->post(request, byteMsg);
 }
@@ -75,7 +75,7 @@ void ServerInterface::parseReply(QNetworkReply* reply)
 {
 	if (reply->error() == QNetworkReply::NoError) {
 		QByteArray bytes = reply->readAll();
-		cout << QString(bytes).toStdString() << endl;
+		qDebug() << QString(bytes);
 		Reply* reply = buildReply(bytes);
 		if (reply) {
 			bool result = reply->parse(bytes);
@@ -83,6 +83,7 @@ void ServerInterface::parseReply(QNetworkReply* reply)
 				if (reply->getType() == "login") {
 					emit onSessionKeyChanged(dynamic_cast<LoginReply *>(reply)->getSessionKey());
 					emit onFriendListChanged(dynamic_cast<LoginReply *>(reply)->getFriends());
+					emit onPinListChanged(dynamic_cast<LoginReply *>(reply)->getPins());
 					m_isLoggedIn = true;
 				} else if (reply->getType() == "location") {
 					emit onGetLocations(dynamic_cast<GetLocationsReply *>(reply)->getFriends());
@@ -98,7 +99,7 @@ void ServerInterface::parseReply(QNetworkReply* reply)
 			}
 			Q_UNUSED(result);
 		} else {
-			cout << "parse error" << endl;
+			qWarning() << "parse error";
 		}
 	} else {
 		SystemToast toast;

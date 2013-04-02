@@ -1,12 +1,14 @@
 /**
  * Pin container for the MapView
+ * 
+ * by Sukwon Oh, Bill Chen
  */
 import bb.cascades 1.0
 
 Container {
     // File path of the pin image
     property string profileImageSource: "asset:///images/default.jpg"
-    property string pinImageSource: "asset:///images/Map_pin3.png"
+    property string pinImageSource: "asset:///images/Map_pin4.png"
     // pointerOffsetX, pointerOffsetY is the position of the pixel in pin image that should point to the location. Change these to match your pin image.
     property int pointerOffsetX: 90
     property int pointerOffsetY: 184
@@ -30,7 +32,7 @@ Container {
         imageSource: pinImageSource
         layoutProperties: AbsoluteLayoutProperties {
             positionX: -18
-            positionY: -6
+            positionY: -8
         }
     }
     ImageView {

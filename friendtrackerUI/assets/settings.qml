@@ -56,6 +56,7 @@ Sheet {
             id: profileTab
             title: qsTr("Profile Settings")
             description: "Profile Settings"
+            imageSource: "asset:///images/device.png"
             property alias navHandle: nav1
             NavigationPane {
                 id: nav1
@@ -82,6 +83,7 @@ Sheet {
                         ActionItem {
                             title: "Take Picture"
                             ActionBar.placement: ActionBarPlacement.OnBar
+                            imageSource: "asset:///images/Camera2.png"
                             onTriggered: {
                                 _settings.openCamera()
                             }
@@ -89,6 +91,7 @@ Sheet {
                         ActionItem {
                             title: "Pick Picture"
                             ActionBar.placement: ActionBarPlacement.OnBar
+                            imageSource: "asset:///images/tab.png"
                             onTriggered: {
                                 filePicker.open()
                             }
@@ -116,120 +119,89 @@ Sheet {
 
                             Container {
                                 layout: StackLayout {
-                                    orientation: LayoutOrientation.LeftToRight
                                 }
+                                Label {
+                                    id: displayName
+                                    text: _settings.displayName
+                                    textStyle.color: Color.White
+                                    textStyle.fontSize: FontSize.Large
+                                    textStyle.fontWeight: FontWeight.Bold
+                                    horizontalAlignment: HorizontalAlignment.Left
 
-                                Container {
-                                    layout: StackLayout {
+                                    /*
+                                     * Connect to display name changed signal from BBM
+                                     */
+                                    onCreationCompleted: {
+                                        _settings.displayNameChanged.connect(displayName.updateDisplayName);
                                     }
-                                    Label {
-                                        id: displayName
-                                        text: _settings.displayName
-                                        textStyle.color: Color.White
-                                        textStyle.fontSize: FontSize.Medium
-                                        textStyle.fontWeight: FontWeight.Bold
-                                    }
-                                }
 
+                                    function updateDisplayName(newDisplayName) {
+                                        displayName.text = _settings.displayName;
+                                    }
+                                } // Label
+                                
                                 ImageView {
                                     id: profilePicture
                                     image: _settings.profilePicture
                                     preferredHeight: 300
                                     preferredWidth: 300
-                                }
+                                    horizontalAlignment: HorizontalAlignment.Center
+                                } // ImageView
                             } // Container
 
                             Divider {
                             }
 
+                            Label {
+                                text: "Status"
+                                textStyle.color: Color.White
+                            }
+
                             Container {
                                 layout: StackLayout {
-                                    //    orientation: LayoutOrientation.LeftToRight
                                 }
+                                
+                                Container {
+                                    layout: StackLayout {
+                                        orientation: LayoutOrientation.LeftToRight
+                                    }
 
-                                Label {
-                                    text: "Status Message"
-                                    textStyle.color: Color.White
-                                }
+                                    TextField {
+                                        id: statusMessageBox
+                                        text: _settings.statusMessage
+                                    }
 
-                                DropDown {
-                                    id: statusMessageDropDown
-                                    title: "Status Message"
-                                    enabled: true
+                                    ImageToggleButton {
+                                        id: availabilityButton
+                                        imageSourceChecked: "asset:///images/busy.png"
+                                        imageSourceDefault: "asset:///images/available.png"
+                                        horizontalAlignment: HorizontalAlignment.Center
 
-                                    property int initialized: 0
-                                    property int ignoreBBMUpdate: 0
-
-                                    onCreationCompleted: {
-                                        if (_settings.statusMessage != "") {
-                                            customStatusMessage.text = _settings.statusMessage;
-                                            customStatusMessage.selected = true;
-                                        } else {
-                                            if (_settings.userStatus == 1) {
-                                                availableOption.selected = true;
-                                            } else {
-                                                busyOption.selected = true;
-                                            }
+                                        checked: {
+                                            if (_settings.userStatus == 1) return false;
+                                            else return true;
                                         }
-                                        
-                                        _settings.statusChangedFromBBM.connect(
-                                            statusMessageDropDown.updateUserStatus);
-                                        initialized = 1;
-                                    }
-                                    
-                                    function updateUserStatus(type, val) {
-                                        // ignore update from BBM that was from radio button update
-                                        if (ignoreBBMUpdate == 1) {
-                                            ignoreBBMUpdate = 0;
-                                            return;
-                                        }
-                                        if (val != "") {
-                                            customStatusMessage.text = val;
-                                            customStatusMessage.selected = true;
-                                        } else {
-                                            if (type == 1) {
-                                                availableOption.selected = true;
-                                            } else {
-                                                busyOption.selected = true;
-                                            }
-                                        }
-                                    }
-                                    
-                                    onSelectedIndexChanged: {
-                                        if (initialized == 1) {
-                                            if (selectedIndex == 0) {
-                                                _settings.setStatus(1, "Available");
-                                                ignoreBBMUpdate = 1;
-                                                customMessageBox.visible = false;
-                                            } else if (selectedIndex == 1) {
-                                                _settings.setStatus(2, "Busy");
-                                                ignoreBBMUpdate = 1;
-                                                customMessageBox.visible = false;
-                                            } else {
-                                                customMessageBox.visible = true;
-                                            }
-                                        }
-                                    }
-
-                                    Option {
-                                        id: availableOption
-                                        text: "Available"
-                                        value: "Available"
-                                    }
-                                    Option {
-                                        id: busyOption
-                                        text: "Busy"
-                                        value: "Busy"
-                                    }
-                                    Option {
-                                        id: customStatusMessage
-                                        text: "Edit Status Message"
                                     }
                                 }
                                 
-                                TextField {
-                                    id: customMessageBox
-                                    visible: false
+                                /*
+                                 * Status is updated to BBM when the user presses this button
+                                 */
+                                Button {
+                                    id: statusUpdateButton
+                                    text: "Update"
+                                    horizontalAlignment: HorizontalAlignment.Right
+                                    
+                                    onClicked: {
+                                        if (availabilityButton.checked == true) {
+                                            _settings.userStatus = 2;
+                                        } else {
+                                            _settings.userStatus = 1;
+                                        }
+                                        _settings.statusMessage = statusMessageBox.text;
+                                        
+                                        _settings.updateStatusOnBBM();
+                                    }
                                 }
 
                                 Label {
@@ -237,7 +209,7 @@ Sheet {
                                     textStyle.color: Color.White
 
                                 }
-                                TextArea {
+                                TextField {
                                     id: personalMessage
                                     text: _settings.personalMessage
                                     horizontalAlignment: HorizontalAlignment.Fill
@@ -323,7 +295,7 @@ Sheet {
             property alias navHandle: nav2
             title: qsTr("Server Settings")
             description: "Server Settings"
-
+            imageSource: "asset:///images/server.png"
             NavigationPane {
                 id: nav2
 
@@ -340,6 +312,8 @@ Sheet {
                             onTriggered: {
                                 // Emit the custom signal here to indicate that this page needs to be closed
                                 // The signal would be handled by the page which invoked it
+                                _friendtracker.initial = false;  // another ugly hack used to always start 
+                                								 // visibility and mode settings in default values
                                 settingsSheet.close();
                             }
                         }
@@ -384,7 +358,12 @@ Sheet {
                             ToggleButton {
                                 id: visibility
                                 objectName: "visibility"
-                                checked: _friendtracker.getValueFor(visibility.objectName, "true")
+                                checked: {
+                                    if (_friendtracker.initial == true) {
+                                        _friendtracker.saveValueFor(visibility.objectName, "true");
+                                    }
+                                    return _friendtracker.getValueFor(visibility.objectName, "true");
+                                }
                                 horizontalAlignment: HorizontalAlignment.Right
                                 
                                 onCheckedChanged: {
@@ -405,7 +384,12 @@ Sheet {
                             ToggleButton {
                                 id: mode
                                 objectName: "mode"
-                                checked: _friendtracker.getValueFor(mode.objectName, "true")
+                                checked: {
+                                    if (_friendtracker.initial == true) {
+                                        _friendtracker.saveValueFor(mode.objectName, "true");
+                                    }
+                                    return _friendtracker.getValueFor(mode.objectName, "true");
+                                }
                                 horizontalAlignment: HorizontalAlignment.Right                            
                                 
                                 onCheckedChanged: {
@@ -430,6 +414,10 @@ Sheet {
                                 fromValue: 1
                                 toValue: 300
                                 value: _friendtracker.getValueFor(pullFrequency.objectName, "5")
+                                enabled: {
+                                    if (mode.checked) return false;
+                                    else return true;
+                                }
 
                                 onImmediateValueChanged: {
                                     var str = printPullFrequency(value);

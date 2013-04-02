@@ -2,7 +2,7 @@
  * Utility.cpp
  *
  *  Created on: 2013-03-29
- *      Author: soh
+ *      Author: Sukwon Oh
  */
 
 #include "Utility.h"
@@ -12,10 +12,12 @@
 #include <bb/cascades/Image>
 #include <bb/ImageData>
 #include <bb/utility/ImageConverter>
+#include <bb/system/SystemToast>
 
 #include <QtLocationSubset/QGeoServiceProvider>
 
 using namespace QtMobilitySubset;
+using namespace bb::system;
 
 QByteArray Utility::scaleImage(const QByteArray& imageData, int width, int height)
 {
@@ -35,4 +37,18 @@ QGeoSearchManager* Utility::getSearchManager()
 {
 	static QGeoServiceProvider serviceProvider("BbGeoServices");
 	return serviceProvider.searchManager();
+}
+
+void Utility::showToast(const QString& msg)
+{
+	SystemToast toast;
+	toast.setBody(msg);
+	toast.show();
+}
+
+void Utility::execToast(const QString& msg)
+{
+	SystemToast toast;
+	toast.setBody(msg);
+	toast.exec();
 }
